@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import type { Route } from "../home/+types/home";
 
 export function meta({}: Route.MetaArgs) {
@@ -9,6 +10,11 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return (
-    <div>home</div>
+    <div>
+      home
+      <Button variant="contained" color="primary">
+        teste
+      </Button>
+    </div>
   );
 }

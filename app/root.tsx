@@ -9,6 +9,10 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { ThemeProvider } from "@mui/material";
+import { SideMenu } from "./components/sideMenu/sideMenu";
+import { DrawerProvider } from "./context/drawerContext";
+import { LightTheme } from "./shared/themes/light";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,7 +37,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+      <ThemeProvider theme={LightTheme}>
+      <DrawerProvider >
+        <SideMenu>
+          {children}
+        </SideMenu>
+      </DrawerProvider>
+      </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

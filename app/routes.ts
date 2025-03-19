@@ -8,13 +8,13 @@ export function optionsSideMenu() {
     useEffect(() => {
         setDrawerOptions([
             {
-                path: '/home',
+                path: '/pagina-inicial',
                 label: 'Página Inicial',
                 icon: 'home'
             },
             {
-                path: '/cidades',
-                label: 'cidades',
+                path: '/gastos',
+                label: 'Gastos',
                 icon: 'star'
             }
         ]);
@@ -23,5 +23,6 @@ export function optionsSideMenu() {
 
 export default [
     index("pages/login/login.tsx"),
-    route("/home", "pages/home/home.tsx")
+    route("/pagina-inicial", "pages/home/home.tsx"),
+    route("/gastos", "pages/expenses/expenses.tsx")
 ] satisfies RouteConfig;

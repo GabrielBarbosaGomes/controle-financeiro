@@ -11,10 +11,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   return (
     <div>
-      home
-      <Button variant="contained" color="primary">
-        teste
-      </Button>
+     home
     </div>
   );
 }

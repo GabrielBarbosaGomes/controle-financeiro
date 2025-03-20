@@ -1,6 +1,7 @@
 import type { Route } from "../home/+types/home";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
 import { ToolsList } from "~/components/toolsList/toolsList";
+import { ToolsDetails } from "~/components/toolsDetails/toolsDetails";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -11,11 +12,6 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return (
-    <LayoutPage 
-        titulo="Dashboard"
-        // barraDeFerramentas={(<ToolsList showInputResearch textButton="Teste"/>)}
-        >
-            aaaaaaaaaaaaa
-        </LayoutPage>
+    <>home</>
   );
 }

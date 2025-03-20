@@ -51,7 +51,7 @@ export const LayoutPage = ({
         </Typography>
       </Box>
 
-      {barraDeFerramentas && (<Box>{barraDeFerramentas}</Box>)}
+      {barraDeFerramentas && (<Box display="flex" flexDirection="column" gap={1}>{barraDeFerramentas}</Box>)}
 
       <Box 
       flex={1} 

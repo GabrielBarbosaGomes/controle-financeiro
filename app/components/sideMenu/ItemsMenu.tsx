@@ -1,4 +1,4 @@
-import { Icon, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Icon, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useMatch, useNavigate, useResolvedPath } from "react-router";
 
 interface ItensMenuProps {
@@ -24,14 +24,15 @@ export const ItemsMenu = ({ label, icon, to, onClick }: ItensMenuProps) => {
       <ListItemIcon>
         <Icon>{icon}</Icon>
       </ListItemIcon>
-      <ListItemText
-      sx={{
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-      }}
-       primary={label} 
-       />
+      <Typography
+      variant="button"
+      whiteSpace= "nowrap"
+      overflow= "hidden"
+      textOverflow= "ellipsis"
+      >
+          <ListItemText primary={label} />
+      </Typography>
+      
     </ListItemButton>
   );
 };

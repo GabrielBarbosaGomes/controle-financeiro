@@ -24,7 +24,14 @@ export const ItemsMenu = ({ label, icon, to, onClick }: ItensMenuProps) => {
       <ListItemIcon>
         <Icon>{icon}</Icon>
       </ListItemIcon>
-      <ListItemText primary={label} />
+      <ListItemText
+      sx={{
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+       primary={label} 
+       />
     </ListItemButton>
   );
 };

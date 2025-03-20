@@ -1,5 +1,6 @@
 import {
   IconButton,
+  Paper,
   Typography,
   useMediaQuery,
   useTheme,
@@ -52,7 +53,17 @@ export const LayoutPage = ({
 
       {barraDeFerramentas && (<Box>{barraDeFerramentas}</Box>)}
 
-      <Box flex={1} overflow="auto">{children}</Box>
+      <Box 
+      flex={1} 
+      overflow="auto" 
+      component={Paper}
+      marginX={1}
+      padding={1}
+      paddingX={3}
+      height={theme.spacing(6)}
+      >
+        {children}
+        </Box>
     </Box>
   );
 };

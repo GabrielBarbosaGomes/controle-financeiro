@@ -1,5 +1,6 @@
-import { Button } from "@mui/material";
 import type { Route } from "../home/+types/home";
+import { LayoutPage } from "~/shared/layouts/layoutPages";
+import { ToolsList } from "~/components/toolsList/toolsList";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,8 +11,11 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return (
-    <div>
-     home
-    </div>
+    <LayoutPage 
+        titulo="Dashboard"
+        // barraDeFerramentas={(<ToolsList showInputResearch textButton="Teste"/>)}
+        >
+            aaaaaaaaaaaaa
+        </LayoutPage>
   );
 }

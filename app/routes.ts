@@ -14,8 +14,13 @@ export function optionsSideMenu() {
             },
             {
                 path: '/gastos',
-                label: 'Gastos',
-                icon: 'star'
+                label: 'Saida de Dinheiro',
+                icon: 'shopping_cart'
+            },
+            {
+                path: '/ganhos',
+                label: 'Entrada de Dinheiros',
+                icon: 'currency_exchange'
             }
         ]);
     }, []);

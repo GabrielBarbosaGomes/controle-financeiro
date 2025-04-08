@@ -1,5 +1,5 @@
 import { type RouteConfig, index, route } from "@react-router/dev/routes";
-import { useDrawerContext } from "./context/drawerContext";
+import { useDrawerContext } from "./shared/context/drawerContext";
 import { useEffect } from "react";
 
 export function optionsSideMenu() {
@@ -13,15 +13,15 @@ export function optionsSideMenu() {
                 icon: 'home'
             },
             {
-                path: '/gastos',
-                label: 'Saida de Dinheiro',
+                path: '/Despesas',
+                label: 'Despesas',
                 icon: 'shopping_cart'
             },
-            {
-                path: '/ganhos',
-                label: 'Entrada de Dinheiros',
-                icon: 'currency_exchange'
-            }
+            // {
+            //     path: '/faturamento',
+            //     label: 'Faturamento',
+            //     icon: 'currency_exchange'
+            // }
         ]);
     }, []);
 }
@@ -29,5 +29,12 @@ export function optionsSideMenu() {
 export default [
     index("pages/login/login.tsx"),
     route("/pagina-inicial", "pages/home/home.tsx"),
-    route("/gastos", "pages/expenses/expenses.tsx")
+    
+    /**rotas de saida de dinheiro */
+    route("/Despesas", "pages/debt/debt.tsx"),
+    route("/Despesas/Detalhe/:id", "pages/debt/detailsDebt.tsx"),
+    // route("/gastos/detalhes:id", "pages/expenses/expenses.tsx")
+    
+    /**rotas de entrada de dinheiro */
+    // route("/ganhos", "pages/expenses/expenses.tsx"),
 ] satisfies RouteConfig;

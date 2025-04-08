@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import Icon from "@mui/material/Icon";
-import { useDrawerContext } from "~/context/drawerContext";
+import { useDrawerContext } from "~/shared/context/drawerContext";
 
 interface ILayoutPage {
   children?: React.ReactNode;

@@ -11,10 +11,10 @@ import {
   useTheme,
 } from "@mui/material";
 import { Box, useMediaQuery } from "@mui/system";
-import { useDrawerContext } from "~/context/drawerContext";
+import { useDrawerContext } from "~/shared/context/drawerContext";
 import { ItemsMenu } from "./ItemsMenu";
 import { optionsSideMenu } from "~/routes";
-import { useAppThemeProvider } from "~/context/themeContext";
+import { useAppThemeProvider } from "~/shared/context/themeContext";
 // import HomeIcon from '@mui/icons-material/Home';
 
 interface SideMenuProps {

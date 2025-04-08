@@ -1,7 +1,9 @@
 import { Box, Button, Icon, Paper, TextField, useTheme } from "@mui/material";
 import type { ReactNode } from "react";
 
-interface IToolsList {
+import { Environment } from "~/shared/environment";
+
+interface IToolsListProps {
   children?: ReactNode;
   researchText?: string;
   showInputResearch?: boolean;
@@ -19,7 +21,7 @@ export const ToolsList = ({
   textButton = "Novo",
   showButton = true,
   clickButton
-}: IToolsList) => {
+}: IToolsListProps) => {
   const theme = useTheme();
   return (
     <Box
@@ -34,7 +36,7 @@ export const ToolsList = ({
     >
       {showInputResearch && (<TextField
         size="small"
-        placeholder="pesquisar..."
+        placeholder={Environment.INPUT_DE_BUSCA}
         value={researchText}
         onChange={(e) => changeTextResearch?.(e.target.value)}
       />)}

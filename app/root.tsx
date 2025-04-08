@@ -10,8 +10,8 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { SideMenu } from "./components/sideMenu/sideMenu";
-import { DrawerProvider } from "./context/drawerContext";
-import { AppThemeProvider } from "./context/themeContext";
+import { DrawerProvider } from "./shared/context/drawerContext";
+import { AppThemeProvider } from "./shared/context/themeContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

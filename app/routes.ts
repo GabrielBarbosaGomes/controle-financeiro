@@ -34,7 +34,8 @@ export default [
     route("/Despesas", "pages/debt/debt.tsx"),
     route("/Despesas/Fixed/Detalhe/:id", "pages/debt/detailsDebtFixed.tsx"),
     // route("/gastos/detalhes:id", "pages/expenses/expenses.tsx")
+
     
     /**rotas de entrada de dinheiro */
-    // route("/ganhos", "pages/expenses/expenses.tsx"),
+    // route("/faturamento", "pages/income/income.tsx"),
 ] satisfies RouteConfig;

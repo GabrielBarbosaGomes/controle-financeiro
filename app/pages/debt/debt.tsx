@@ -1,5 +1,5 @@
 import {
-    Icon,
+  Icon,
   IconButton,
   LinearProgress,
   Pagination,
@@ -18,10 +18,11 @@ import { ToolsList } from "~/components/toolsList/toolsList";
 import { Environment } from "~/shared/environment";
 import { useDebounce } from "~/shared/hooks/useDebounce";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
+import { deleteDebt, type IDeleteDebt } from "~/shared/services/api/debs/delete-debt";
 import {
-  ExiteMoneyService,
+  getAllDebts,
   type IListDebts,
-} from "~/shared/services/api/exitMoney/exitMoneyService";
+} from "~/shared/services/api/debs/get-debit-all";
 
 export default function Debt() {
   const navigate = useNavigate();
@@ -43,13 +44,15 @@ export default function Debt() {
     setIsLoading(true);
 
     debounce(() => {
-      ExiteMoneyService.getAll(page, search).then((result) => {
+      getAllDebts(page, search).then((result) => {
         setIsLoading(false);
 
         if (result instanceof Error) {
           alert(result.message);
           return;
         }
+
+        console.log('result',result)
 
         setRows(result.data);
         setTotalCount(result.totalCount);
@@ -58,23 +61,28 @@ export default function Debt() {
   }, [search, page]);
 
   const handleDelete = (id: number) => {
-    console.log('delete', id)
-    if(confirm('Realmente deseja apagar?')){
-        ExiteMoneyService.deleteById(id)
-        .then(result => {
-            if( result instanceof Error){
-                alert(result.message)
-                return
-            }
-            setRows(oldRows => {
-                return [
-                    ...(oldRows ?? []).filter(oldRow => oldRow.codDispesaFixa !== id)
-                ]
-            })
-            alert('registro apagado com sucesso!')
-        })
+    console.log("delete", id);
+    if (confirm("Realmente deseja apagar?")) {
+      const reqDelete: IDeleteDebt = {
+        codUsuario: 1,
+        codDispesaFixa: id,
+        nomeDispesa: "fixed",
+      };
+
+      deleteDebt(reqDelete).then((result) => {
+        if (result instanceof Error) {
+          alert(result.message);
+          return;
+        }
+        setRows((oldRows) => {
+          return [
+            ...(oldRows ?? []).filter((oldRow) => oldRow.codDispesaFixa !== id),
+          ];
+        });
+        alert("registro apagado com sucesso!");
+      });
     }
-  }
+  };
 
   return (
     <LayoutPage
@@ -84,10 +92,10 @@ export default function Debt() {
           showInputResearch
           showButton
           textButton="Nova"
-          clickButton={()=> navigate('/Despesas/Detalhe/Nova')}
+          clickButton={() => navigate("/Despesas/Fixed/Detalhe/Nova")}
           researchText={search}
           changeTextResearch={(text) =>
-            setSearchParams({ busca: text, page: '1' }, { replace: true })
+            setSearchParams({ busca: text, page: "1" }, { replace: true })
           }
         />
       }
@@ -110,22 +118,30 @@ export default function Debt() {
             {rows?.map((row) => (
               <TableRow key={row.codDispesaFixa}>
                 <TableCell>
-                    <IconButton size="small" onClick={()=> handleDelete(row.codDispesaFixa)}>
-                        <Icon>delete</Icon>
-                    </IconButton>
-                    <IconButton size="small" onClick={() => navigate(`/Despesas/Detalhe/${row.codDispesaFixa}`)}>
-                        <Icon>edit</Icon>
-                    </IconButton>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDelete(row.codDispesaFixa)}
+                  >
+                    <Icon>delete</Icon>
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      navigate(`/Despesas/Fixed/Detalhe/${row.codDispesaFixa}`)
+                    }
+                  >
+                    <Icon>edit</Icon>
+                  </IconButton>
                 </TableCell>
                 <TableCell>{row.nomeDispesaFixa}</TableCell>
                 <TableCell>{row.valorDispesaFixa}</TableCell>
-                <TableCell>{row.comentarioDispesaFixa}</TableCell>
+                <TableCell>{row.comentarioDispesaFixa ?? ''}</TableCell>
               </TableRow>
             ))}
           </TableBody>
-            {totalCount === 0 && !isLoading && (
-                <caption>{Environment.LISTAGEM_VAZIA}</caption>
-            )}
+          {totalCount === 0 && !isLoading && (
+            <caption>{Environment.LISTAGEM_VAZIA}</caption>
+          )}
 
           <TableFooter>
             {isLoading && (
@@ -135,14 +151,21 @@ export default function Debt() {
                 </TableCell>
               </TableRow>
             )}
-            {(totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHA) && (
+            {totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHA && (
               <TableRow>
-                <TableCell colSpan={Math.ceil(totalCount / Environment.LIMITE_DE_LINHA)}>
-                <Pagination
+                <TableCell
+                  colSpan={Math.ceil(totalCount / Environment.LIMITE_DE_LINHA)}
+                >
+                  <Pagination
                     page={page}
                     count={10}
-                    onChange={(_, newPage)=> setSearchParams({ search, page: newPage.toString()}, {replace: true})}
-                />
+                    onChange={(_, newPage) =>
+                      setSearchParams(
+                        { search, page: newPage.toString() },
+                        { replace: true }
+                      )
+                    }
+                  />
                 </TableCell>
               </TableRow>
             )}

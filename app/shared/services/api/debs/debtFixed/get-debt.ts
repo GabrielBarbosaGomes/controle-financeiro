@@ -36,7 +36,6 @@ export const getDebtFixedById = async (req: IReqDebtFixed): Promise<TDebtsFixedT
               codDispesaFixa: req.codDispesaFixa,
             },
           });
-          console.log('aaa', data)
 
         if(data){
             return {

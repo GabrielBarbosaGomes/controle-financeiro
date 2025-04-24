@@ -8,7 +8,7 @@ export const updateDebtFixed = async (payload: IDebtFixed): Promise<void | Error
 
          await coreApi.put(urlRelative, {
                 codUsuario: payload.codUsuario,
-                cod_dispesa_fixa: payload.Cod_dispesa_fixa,
+                cod_dispesa_fixa: payload.CodDespesa,
                 nome: payload.nome,
                 valor: payload.valor,
                 valorParcela: payload.valorParcela,

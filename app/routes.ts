@@ -17,11 +17,11 @@ export function optionsSideMenu() {
                 label: 'Despesas',
                 icon: 'shopping_cart'
             },
-            // {
-            //     path: '/faturamento',
-            //     label: 'Faturamento',
-            //     icon: 'currency_exchange'
-            // }
+            {
+                path: '/faturamento',
+                label: 'Faturamento',
+                icon: 'currency_exchange'
+            }
         ]);
     }, []);
 }
@@ -33,6 +33,7 @@ export default [
     /**rotas de saida de dinheiro */
     route("/Despesas", "pages/debt/debt.tsx"),
     route("/Despesas/Fixed/Detalhe/:id", "pages/debt/detailsDebtFixed.tsx"),
+    route("/Despesas/Variables/Detalhe/:id", "pages/debt/detailsDebtVariable.tsx"),
     // route("/gastos/detalhes:id", "pages/expenses/expenses.tsx")
 
     

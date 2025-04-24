@@ -1,7 +1,15 @@
+import Tab from "@mui/joy/Tab";
+import TabList from "@mui/joy/TabList";
+import TabPanel from "@mui/joy/TabPanel";
+import Tabs from "@mui/joy/Tabs";
 import {
+  Backdrop,
+  Box,
+  Fade,
   Icon,
   IconButton,
   LinearProgress,
+  Modal,
   Pagination,
   Paper,
   Table,
@@ -11,27 +19,46 @@ import {
   TableFooter,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { DataTable } from "~/components/dataTable/dataTable";
+import { HorizontalTabs } from "~/components/tabs/tabs";
 import { ToolsList } from "~/components/toolsList/toolsList";
 import { Environment } from "~/shared/environment";
 import { useDebounce } from "~/shared/hooks/useDebounce";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
-import { deleteDebt, type IDeleteDebt } from "~/shared/services/api/debs/delete-debt";
+import {
+  getDebtFixed,
+  type IDetailsDebtsFixed,
+} from "~/shared/services/api/debs/debtFixed/get-debt";
+import {
+  deleteDebt,
+  type IDeleteDebt,
+} from "~/shared/services/api/debs/delete-debt";
 import {
   getAllDebts,
   type IListDebts,
 } from "~/shared/services/api/debs/get-debit-all";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  type GridColDef,
+} from "@mui/x-data-grid";
+import { getDebtVariables, type IDetailsDebtVariables } from "~/shared/services/api/debs/debtVariables/get-debt";
+
 
 export default function Debt() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { debounce } = useDebounce();
-  const [rows, setRows] = useState<IListDebts[]>();
+  const [dataDebtFixed, setDataDebtFixed] = useState<IDetailsDebtsFixed[]>();
+  const [dataDebtVariavel, setDataDebtVariavel] = useState<IDetailsDebtVariables[]>();
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [open, setOpen] = useState(false);
+  
   const search = useMemo(() => {
     return searchParams.get("busca") || "";
   }, [searchParams]);
@@ -44,19 +71,44 @@ export default function Debt() {
     setIsLoading(true);
 
     debounce(() => {
-      getAllDebts(page, search).then((result) => {
+      // getAllDebts(page, search).then((result) => {
+      //   setIsLoading(false);
+
+      //   if (result instanceof Error) {
+      //     alert(result.message);
+      //     return;
+      //   }
+
+      //   console.log("result", result);
+
+      //   setDataDebtFixed(result.data);
+      //   setTotalCount(result.totalCount);
+      // });
+      getDebtFixed(page, search).then((result) => {
         setIsLoading(false);
 
         if (result instanceof Error) {
           alert(result.message);
           return;
         }
+        console.log("result", result);
+        setDataDebtFixed(result.data);
+        setTotalCount(result.totalCount);
+        console.log("result.data", result.data);
+      });
 
-        console.log('result',result)
+      getDebtVariables(page, search).then((result) => {
+        setIsLoading(false);
 
-        setRows(result.data);
+        if (result instanceof Error) {
+          alert(result.message);
+          return;
+        }
+        console.log("result", result);
+        setDataDebtVariavel(result.data);
         setTotalCount(result.totalCount);
       });
+
     });
   }, [search, page]);
 
@@ -74,15 +126,90 @@ export default function Debt() {
           alert(result.message);
           return;
         }
-        setRows((oldRows) => {
+        setDataDebtFixed((olddataDebtFixed) => {
           return [
-            ...(oldRows ?? []).filter((oldRow) => oldRow.codDispesaFixa !== id),
+            ...(olddataDebtFixed ?? []).filter((oldRow) => oldRow.id !== id),
           ];
         });
         alert("registro apagado com sucesso!");
       });
     }
   };
+
+  const columnsFixed: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "nome", headerName: "Nome Despesa", width: 300 },
+    { field: "valor", headerName: "Valor Despesa", width: 200 },
+    { field: "comentario", headerName: "comentario", width: 300 },
+    { field: "data", headerName: "data", width: 300 },
+    { field: "finalizado", headerName: "Finalizado", width: 300 },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            // icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={() => navigate(`/Despesas/Fixed/Detalhe/${id}`)}
+            color="inherit"
+            showInMenu={true}
+          />,
+          <GridActionsCellItem
+            // icon={<DeleteIcon />}
+            label="Delete"
+            onClick={() => handleDelete(Number(id))}
+            color="inherit"
+            showInMenu={true}
+          />,
+        ];
+      },
+    },
+  ];
+  
+  const columnsVariable: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "nome", headerName: "Nome Despesa", width: 300 },
+    { field: "valor", headerName: "Valor Despesa", width: 200 },
+    { field: "comentario", headerName: "comentario", width: 300 },
+    { field: "data", headerName: "data", width: 300 },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            // icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={() => navigate(`/Despesas/Variables/Detalhe/${id}`)}
+            color="inherit"
+            showInMenu={true}
+          />,
+          <GridActionsCellItem
+            // icon={<DeleteIcon />}
+            label="Delete"
+            onClick={() => handleDelete(Number(id))}
+            color="inherit"
+            showInMenu={true}
+          />,
+        ];
+      },
+    },
+  ];
+
+  // function modalNewDebt() {
+  //   return(
+  //     <></>
+  //   )
+  // }
 
   return (
     <LayoutPage
@@ -92,7 +219,8 @@ export default function Debt() {
           showInputResearch
           showButton
           textButton="Nova"
-          clickButton={() => navigate("/Despesas/Fixed/Detalhe/Nova")}
+          clickButton={() => setOpen(!open)}
+          // clickButton={() => navigate("/Despesas/Fixed/Detalhe/Nova")}
           researchText={search}
           changeTextResearch={(text) =>
             setSearchParams({ busca: text, page: "1" }, { replace: true })
@@ -100,78 +228,77 @@ export default function Debt() {
         />
       }
     >
-      <TableContainer
-        component={Paper}
-        variant="outlined"
-        sx={{ margin: 1, width: "auto" }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Ações</TableCell>
-              <TableCell>Nome</TableCell>
-              <TableCell>Valor</TableCell>
-              <TableCell>Comentario</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows?.map((row) => (
-              <TableRow key={row.codDispesaFixa}>
-                <TableCell>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleDelete(row.codDispesaFixa)}
-                  >
-                    <Icon>delete</Icon>
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    onClick={() =>
-                      navigate(`/Despesas/Fixed/Detalhe/${row.codDispesaFixa}`)
-                    }
-                  >
-                    <Icon>edit</Icon>
-                  </IconButton>
-                </TableCell>
-                <TableCell>{row.nomeDispesaFixa}</TableCell>
-                <TableCell>{row.valorDispesaFixa}</TableCell>
-                <TableCell>{row.comentarioDispesaFixa ?? ''}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-          {totalCount === 0 && !isLoading && (
-            <caption>{Environment.LISTAGEM_VAZIA}</caption>
-          )}
+      <HorizontalTabs selectedTab={0}  >
+      
+      <HorizontalTabs.Tab label="fixo" >
+        <DataGrid
+          columns={columnsFixed}
+          rows={dataDebtFixed ?? []}
+          loading={isLoading}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 5, page: page - 1},
+            },
+          }}
+          onPaginationModelChange={(model) => {
+            setSearchParams(
+              { busca: search, pagina: (model.page + 1).toString() },
+              { replace: true }
+            );
+          }}
+          pageSizeOptions={[5, 10, 25]}
+          disableColumnSorting 
+        />
+      </HorizontalTabs.Tab >
+      <HorizontalTabs.Tab label="variavel" >
+        <DataGrid
+          columns={columnsVariable}
+          rows={dataDebtVariavel ?? []}
+          loading={isLoading}
+          disableColumnSorting 
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 5, page: page - 1 },
+            },
+          }}
+          onPaginationModelChange={(model) => {
+            setSearchParams(
+              { busca: search, pagina: (model.page + 1).toString() },
+              { replace: true }
+            );
+          }}
+          pageSizeOptions={[5, 10, 25]}
 
-          <TableFooter>
-            {isLoading && (
-              <TableRow>
-                <TableCell colSpan={3}>
-                  <LinearProgress variant="indeterminate" />
-                </TableCell>
-              </TableRow>
-            )}
-            {totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHA && (
-              <TableRow>
-                <TableCell
-                  colSpan={Math.ceil(totalCount / Environment.LIMITE_DE_LINHA)}
-                >
-                  <Pagination
-                    page={page}
-                    count={10}
-                    onChange={(_, newPage) =>
-                      setSearchParams(
-                        { search, page: newPage.toString() },
-                        { replace: true }
-                      )
-                    }
-                  />
-                </TableCell>
-              </TableRow>
-            )}
-          </TableFooter>
-        </Table>
-      </TableContainer>
+
+        />
+      </HorizontalTabs.Tab>
+      {/* </TabsComponent> */}
+      </HorizontalTabs>
+
+      {/* <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={() => setOpen(!open)}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={open}>
+          <Box bgcolor="primary.main ">
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Text in a modal
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal> */}
     </LayoutPage>
   );
 }

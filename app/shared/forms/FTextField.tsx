@@ -13,14 +13,8 @@ type FTextFieldProps = TextFieldProps & {
   type: string;
 };
 
-export const FTextField = ({ name, label, type }: FTextFieldProps) => {
+export const FTextField = ({ name, label, type, ...rest }: FTextFieldProps) => {
   const { control } = useFormContext();
-
-  // useEffect(()=>{
-  //     register({
-  //         name:
-  //     })
-  // },[])
 
   return (
     <Controller

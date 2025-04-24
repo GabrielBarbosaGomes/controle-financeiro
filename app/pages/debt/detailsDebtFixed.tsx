@@ -1,12 +1,12 @@
-import {
-  Button,
-  LinearProgress,
-} from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToolsDetails } from "~/components/toolsDetails/toolsDetails";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
-import { FormProvider, useForm } from "react-hook-form";
+import {
+  FormProvider,
+  useForm,
+} from "react-hook-form";
 import {
   deleteDebt,
   type IDeleteDebt,
@@ -34,18 +34,18 @@ export default function DetailsDebtFixed() {
 
   const defaultData = {
     codUsuario: 1,
-    nome: '' ,
+    nome: "",
     valor: 0,
     valorParcela: 0,
     quantidadeParcelas: 0,
     tempoIndeterminado: false,
-    finalizado: false ,
-    comentario: '',
+    finalizado: false,
+    comentario: "",
     data: dayjs().toDate(),
-  }
+  };
 
   const methods = useForm<IDebtFixed>({
-    defaultValues: defaultData
+    defaultValues: defaultData,
   });
 
   useEffect(() => {
@@ -64,8 +64,8 @@ export default function DetailsDebtFixed() {
         alert(result.message);
         navigate("/Despesas");
       } else {
-        setTitleEdit(result.data.nome);
-        methods.reset(result.data)
+        setTitleEdit(result.data[0].nome);
+        methods.reset(result.data[0]);
       }
     });
   }, [methods.reset, id]);
@@ -97,7 +97,7 @@ export default function DetailsDebtFixed() {
 
   const updateDebt = (back: boolean = false, data: IDebtFixed) => {
     data.CodDespesa = Number(id);
-    updateDebtFixed(data)
+    updateDebtFixed(data);
     if (back) {
       navigate("/Despesas");
     }
@@ -116,39 +116,49 @@ export default function DetailsDebtFixed() {
           clickNew={() => navigate("/Despesas/Fixed/Detalhe/Nova")}
           clickBack={() => navigate("/Despesas")}
           clickDelete={() => deleteDebts(Number(id))}
-          // clickSave={() => (id === "Nova" ? saveDebt() : updateDebt())}
-          // clickSaveAndBack={() =>
-          //   id === "Nova" ? saveDebt(true) : updateDebt(true)
-          // }
+          clickSave={methods.handleSubmit((data) =>
+            id === "Nova" ? saveDebt(false, data) : updateDebt(false, data)
+          )}
+          clickSaveAndBack={() =>
+            methods.handleSubmit((data) =>
+              id === "Nova" ? saveDebt(true, data) : updateDebt(true, data)
+            )
+          }
         />
       }
     >
       {isLoading && <LinearProgress variant="indeterminate" />}
-      <FormProvider {...methods}>
-        <form
-          onSubmit={methods.handleSubmit((data) => id === 'Nova' ? saveDebt(false, data) : updateDebt(false, data))}
-        >
-          <FTextField name="nome" label="Nome" type="text" />
 
-          <FTextField name="valor" label="Valor" type="number" />
+          <FormProvider {...methods}>
+            <form>
+              <FTextField name="nome" label="Nome" type="text" />
 
-          <FTextField name="valorParcela" label="Valor da Parcela" type="number" />
+              <FTextField name="valor" label="Valor" type="number" />
 
-          <FTextField name="quantidadeParcelas" label="Quantidade de parcelas" type="number" />
+              <FTextField
+                name="valorParcela"
+                label="Valor da Parcela"
+                type="number"
+              />
 
-          <FCheckbox name="tempoIndeterminado" label="não possui data final para essa despesa."  />
+              <FTextField
+                name="quantidadeParcelas"
+                label="Quantidade de parcelas"
+                type="number"
+              />
 
-          <FCheckbox name="finalizado" label="Débito finalizado."  />
-          
-          <FTextField name="comentario" label="Comentário" type="text" />
+              <FCheckbox
+                name="tempoIndeterminado"
+                label="não possui data final para essa despesa."
+              />
 
-          <FDatePicker name="data" label="Data" />
+              <FCheckbox name="finalizado" label="Débito finalizado." />
 
-          <Button variant="contained" type="submit">
-            Enviar
-          </Button>
-        </form>
-      </FormProvider>
+              <FTextField name="comentario" label="Comentário" type="text" />
+
+              <FDatePicker name="data" label="Data" />
+            </form>
+          </FormProvider>
     </LayoutPage>
   );
 }

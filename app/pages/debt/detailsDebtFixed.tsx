@@ -1,4 +1,4 @@
-import { LinearProgress } from "@mui/material";
+import { Box, LinearProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToolsDetails } from "~/components/toolsDetails/toolsDetails";
@@ -50,8 +50,8 @@ export default function DetailsDebtFixed() {
 
   useEffect(() => {
     if (id === "Nova") return methods.reset(defaultData);
-
     setIsLoading(true);
+    
     const req: IReqDebtFixed = {
       codUsuario: 1,
       codDispesaFixa: Number(id),
@@ -106,6 +106,7 @@ export default function DetailsDebtFixed() {
   return (
     <LayoutPage
       titulo={id === "Nova" ? "Nova Despesa" : titleEdit}
+      isLoading={isLoading}
       barraDeFerramentas={
         <ToolsDetails
           textNewButton="Nova"
@@ -127,11 +128,9 @@ export default function DetailsDebtFixed() {
         />
       }
     >
-      {isLoading && <LinearProgress variant="indeterminate" />}
-
           <FormProvider {...methods}>
-            <form>
-              <FTextField name="nome" label="Nome" type="text" />
+            <form className="flex flex-col gap-4 p-4">
+              <FTextField name="nome" label="Nome" type="text" required/>
 
               <FTextField name="valor" label="Valor" type="number" />
 
@@ -147,16 +146,17 @@ export default function DetailsDebtFixed() {
                 type="number"
               />
 
-              <FCheckbox
-                name="tempoIndeterminado"
-                label="não possui data final para essa despesa."
-              />
-
-              <FCheckbox name="finalizado" label="Débito finalizado." />
-
               <FTextField name="comentario" label="Comentário" type="text" />
 
               <FDatePicker name="data" label="Data" />
+              <Box className="flex">
+                <FCheckbox
+                  name="tempoIndeterminado"
+                  label="não possui data final para essa despesa."
+                />
+
+                <FCheckbox name="finalizado" label="Débito finalizado." />
+              </Box>
             </form>
           </FormProvider>
     </LayoutPage>

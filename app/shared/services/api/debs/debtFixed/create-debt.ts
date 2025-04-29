@@ -33,7 +33,7 @@ export const createDebtFixed = async (req: IDebtFixed): Promise<void | Error> =>
     } catch (error) {
         console.log(error);
         return new Error(
-            (error as { message?: string })?.message || 'Erro ao excluir despesa.'
+            (error as { message?: string })?.message || 'Erro ao criar despesa Fixa.'
         );
     }
 }

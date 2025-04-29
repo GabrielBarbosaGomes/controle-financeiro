@@ -40,7 +40,7 @@ export const getDebtFixed = async (page = 1, filter = ''): Promise<TDebtsFixedTo
             }
         }
 
-        return new Error('Erro ao despesas fixas');
+        return new Error('Erro ao listar as despesas fixas.');
     } catch(error) {
         console.log(error)
         return new Error((error as {message: string}).message || 'Erro ao listar as despesas fixas.');
@@ -65,9 +65,9 @@ export const getDebtFixedById = async (req: IReqDebtFixed): Promise<TDebtsFixedT
             }
         }
 
-        return new Error('Erro ao despesas fixas');
+        return new Error('Erro ao buscar despesa fixa');
     } catch(error) {
         console.log(error)
-        return new Error((error as {message: string}).message || 'Erro ao listar as despesas fixas.');
+        return new Error((error as {message: string}).message || 'Erro ao buscar despesa fixa.');
     }
 };

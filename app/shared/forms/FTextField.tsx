@@ -11,16 +11,17 @@ type FTextFieldProps = TextFieldProps & {
   name: string;
   label: string;
   type: string;
+  required?: boolean
 };
 
-export const FTextField = ({ name, label, type, ...rest }: FTextFieldProps) => {
+export const FTextField = ({ name, label, type, required = false, ...rest }: FTextFieldProps) => {
   const { control } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
-      rules={{ required: "Campo obrigatório" }}
+      rules={required ? { required: `${label} é obrigatório` } : {}}
       render={({ field, fieldState }) => (
         <TextField
           label={label}

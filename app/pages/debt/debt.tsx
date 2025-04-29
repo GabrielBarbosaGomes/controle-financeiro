@@ -44,10 +44,17 @@ import {
 import {
   DataGrid,
   GridActionsCellItem,
+  GridOverlay,
   type GridColDef,
 } from "@mui/x-data-grid";
-import { getDebtVariables, type IDetailsDebtVariables } from "~/shared/services/api/debs/debtVariables/get-debt";
+import {
+  getDebtVariables,
+  type IDetailsDebtVariables,
+} from "~/shared/services/api/debs/debtVariables/get-debt";
 
+function CustomNoRowsOverlay() {
+  return <GridOverlay>teste</GridOverlay>;
+}
 
 export default function Debt() {
   const navigate = useNavigate();
@@ -56,9 +63,9 @@ export default function Debt() {
   const [dataDebtFixed, setDataDebtFixed] = useState<IDetailsDebtsFixed[]>();
   const [dataDebtVariavel, setDataDebtVariavel] = useState<IDetailsDebtVariables[]>();
   const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const [abaSelected, setAbaSelected] = useState(0);
+
   const search = useMemo(() => {
     return searchParams.get("busca") || "";
   }, [searchParams]);
@@ -71,19 +78,6 @@ export default function Debt() {
     setIsLoading(true);
 
     debounce(() => {
-      // getAllDebts(page, search).then((result) => {
-      //   setIsLoading(false);
-
-      //   if (result instanceof Error) {
-      //     alert(result.message);
-      //     return;
-      //   }
-
-      //   console.log("result", result);
-
-      //   setDataDebtFixed(result.data);
-      //   setTotalCount(result.totalCount);
-      // });
       getDebtFixed(page, search).then((result) => {
         setIsLoading(false);
 
@@ -91,10 +85,8 @@ export default function Debt() {
           alert(result.message);
           return;
         }
-        console.log("result", result);
         setDataDebtFixed(result.data);
         setTotalCount(result.totalCount);
-        console.log("result.data", result.data);
       });
 
       getDebtVariables(page, search).then((result) => {
@@ -104,16 +96,13 @@ export default function Debt() {
           alert(result.message);
           return;
         }
-        console.log("result", result);
         setDataDebtVariavel(result.data);
         setTotalCount(result.totalCount);
       });
-
     });
   }, [search, page]);
 
   const handleDelete = (id: number) => {
-    console.log("delete", id);
     if (confirm("Realmente deseja apagar?")) {
       const reqDelete: IDeleteDebt = {
         codUsuario: 1,
@@ -138,11 +127,11 @@ export default function Debt() {
 
   const columnsFixed: GridColDef[] = [
     { field: "id", headerName: "ID", width: 90 },
-    { field: "nome", headerName: "Nome Despesa", width: 300 },
-    { field: "valor", headerName: "Valor Despesa", width: 200 },
-    { field: "comentario", headerName: "comentario", width: 300 },
-    { field: "data", headerName: "data", width: 300 },
-    { field: "finalizado", headerName: "Finalizado", width: 300 },
+    { field: "nome", headerName: "Nome Despesa", flex: 1 },
+    { field: "valor", headerName: "Valor Despesa", flex: 1 },
+    { field: "comentario", headerName: "comentario", flex: 1 },
+    { field: "data", headerName: "data", flex: 1 },
+    { field: "finalizado", headerName: "Finalizado", width: 150 },
     {
       field: "actions",
       type: "actions",
@@ -170,13 +159,13 @@ export default function Debt() {
       },
     },
   ];
-  
+
   const columnsVariable: GridColDef[] = [
     { field: "id", headerName: "ID", width: 90 },
-    { field: "nome", headerName: "Nome Despesa", width: 300 },
-    { field: "valor", headerName: "Valor Despesa", width: 200 },
-    { field: "comentario", headerName: "comentario", width: 300 },
-    { field: "data", headerName: "data", width: 300 },
+    { field: "nome", headerName: "Nome Despesa", flex: 1  },
+    { field: "valor", headerName: "Valor Despesa", flex: 1  },
+    { field: "comentario", headerName: "comentario", flex: 1  },
+    { field: "data", headerName: "data", flex: 1  },
     {
       field: "actions",
       type: "actions",
@@ -205,22 +194,20 @@ export default function Debt() {
     },
   ];
 
-  // function modalNewDebt() {
-  //   return(
-  //     <></>
-  //   )
-  // }
-
   return (
     <LayoutPage
       titulo="Despesas"
+      isLoading={isLoading}
       barraDeFerramentas={
         <ToolsList
           showInputResearch
           showButton
           textButton="Nova"
-          clickButton={() => setOpen(!open)}
-          // clickButton={() => navigate("/Despesas/Fixed/Detalhe/Nova")}
+          clickButton={() =>
+            abaSelected === 0
+              ? navigate("/Despesas/Fixed/Detalhe/Nova")
+              : navigate("/Despesas/Variables/Detalhe/Nova")
+          }
           researchText={search}
           changeTextResearch={(text) =>
             setSearchParams({ busca: text, page: "1" }, { replace: true })
@@ -228,77 +215,64 @@ export default function Debt() {
         />
       }
     >
-      <HorizontalTabs selectedTab={0}  >
-      
-      <HorizontalTabs.Tab label="fixo" >
-        <DataGrid
-          columns={columnsFixed}
-          rows={dataDebtFixed ?? []}
-          loading={isLoading}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 5, page: page - 1},
-            },
-          }}
-          onPaginationModelChange={(model) => {
-            setSearchParams(
-              { busca: search, pagina: (model.page + 1).toString() },
-              { replace: true }
-            );
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          disableColumnSorting 
-        />
-      </HorizontalTabs.Tab >
-      <HorizontalTabs.Tab label="variavel" >
-        <DataGrid
-          columns={columnsVariable}
-          rows={dataDebtVariavel ?? []}
-          loading={isLoading}
-          disableColumnSorting 
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 5, page: page - 1 },
-            },
-          }}
-          onPaginationModelChange={(model) => {
-            setSearchParams(
-              { busca: search, pagina: (model.page + 1).toString() },
-              { replace: true }
-            );
-          }}
-          pageSizeOptions={[5, 10, 25]}
-
-
-        />
-      </HorizontalTabs.Tab>
-      {/* </TabsComponent> */}
-      </HorizontalTabs>
-
-      {/* <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open}
-        onClose={() => setOpen(!open)}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
+      <HorizontalTabs
+        selectedTab={0}
+        onChangeTab={(index) => {
+          setAbaSelected(index);
         }}
       >
-        <Fade in={open}>
-          <Box bgcolor="primary.main ">
-            <Typography id="transition-modal-title" variant="h6" component="h2">
-              Text in a modal
-            </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
-          </Box>
-        </Fade>
-      </Modal> */}
+        <HorizontalTabs.Tab label="fixo">
+          <DataGrid
+            columns={columnsFixed}
+            rows={dataDebtFixed ?? []}
+            loading={isLoading}
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 5, page: page - 1 },
+              },
+            }}
+            onPaginationModelChange={(model) => {
+              setSearchParams(
+                { busca: search, pagina: (model.page + 1).toString() },
+                { replace: true }
+              );
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            disableColumnSorting
+            onRowClick={(row) => navigate("/Despesas/Fixed/Detalhe/" + row.id)}
+            slots={{
+              noRowsOverlay: () => <GridOverlay>Nada Encontrado!</GridOverlay>,
+            }}
+          />
+        </HorizontalTabs.Tab>
+
+        <HorizontalTabs.Tab label="variavel">
+          <DataGrid
+            columns={columnsVariable}
+            rows={dataDebtVariavel ?? []}
+            loading={isLoading}
+            disableColumnSorting
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 5, page: page - 1 },
+              },
+            }}
+            onPaginationModelChange={(model) => {
+              setSearchParams(
+                { busca: search, pagina: (model.page + 1).toString() },
+                { replace: true }
+              );
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            onRowClick={(row) =>
+              navigate("/Despesas/Variables/Detalhe/" + row.id)
+            }
+            slots={{
+              noRowsOverlay: () => <GridOverlay>Nada Encontrado!</GridOverlay>,
+            }}
+          />
+        </HorizontalTabs.Tab>
+      </HorizontalTabs>
     </LayoutPage>
   );
 }

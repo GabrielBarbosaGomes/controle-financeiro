@@ -1,7 +1,8 @@
 import { coreApi } from "../../axiosConfig";
 
-export interface ICreatDebtFixed {
+export interface IDebtFixed {
     codUsuario: number,
+    CodDespesa: number,
     nome: string,
     valor: number,
     valorParcela: number,
@@ -12,12 +13,11 @@ export interface ICreatDebtFixed {
     data: Date,
 }
 
-export const CreateDebtFixed = async (req: ICreatDebtFixed): Promise<void | Error> => {
+export const createDebtFixed = async (req: IDebtFixed): Promise<void | Error> => {
     try {
         const urlRelative = `/Debt/fixed/insert`;
 
          await coreApi.post(urlRelative, {
-            data: {
                 codUsuario: req.codUsuario,
                 nome: req.nome,
                 valor: req.valor,
@@ -27,14 +27,13 @@ export const CreateDebtFixed = async (req: ICreatDebtFixed): Promise<void | Erro
                 finalizado: req.finalizado,
                 comentario: req.comentario,
                 data: req.data,
-            },
         });
 
         return;
     } catch (error) {
         console.log(error);
         return new Error(
-            (error as { message?: string })?.message || 'Erro ao excluir despesa.'
+            (error as { message?: string })?.message || 'Erro ao criar despesa Fixa.'
         );
     }
 }

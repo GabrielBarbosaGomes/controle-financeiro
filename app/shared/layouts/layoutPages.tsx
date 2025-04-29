@@ -1,5 +1,6 @@
 import {
   IconButton,
+  LinearProgress,
   Paper,
   Typography,
   useMediaQuery,
@@ -14,11 +15,13 @@ interface ILayoutPage {
   children?: React.ReactNode;
   titulo: string;
   barraDeFerramentas?: React.ReactNode;
+  isLoading?: boolean;
 }
 
 export const LayoutPage = ({
   children,
   titulo,
+  isLoading,
   barraDeFerramentas,
 }: ILayoutPage) => {
   const smMinor = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
@@ -32,7 +35,7 @@ export const LayoutPage = ({
         display="flex"
         alignItems="center"
         padding={1}
-        height={theme.spacing(smMinor? 6 : mdMinor? 8 : 12)}
+        height={theme.spacing(smMinor ? 6 : mdMinor ? 8 : 12)}
         gap={1}
       >
         {smMinor && (
@@ -42,28 +45,36 @@ export const LayoutPage = ({
         )}
 
         <Typography
-            variant={smMinor? "h5" : mdMinor? "h4" : "h3"}
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
+          variant={smMinor ? "h5" : mdMinor ? "h4" : "h3"}
+          whiteSpace="nowrap"
+          overflow="hidden"
+          textOverflow="ellipsis"
         >
-            {titulo}
+          {titulo}
         </Typography>
       </Box>
 
-      {barraDeFerramentas && (<Box display="flex" flexDirection="column" gap={1}>{barraDeFerramentas}</Box>)}
-
-      <Box 
-      flex={1} 
-      overflow="auto" 
-      component={Paper}
-      marginX={1}
-      padding={1}
-      paddingX={3}
-      height={theme.spacing(6)}
-      >
-        {children}
+      {barraDeFerramentas && (
+        <Box display="flex" flexDirection="column" gap={1}>
+          {barraDeFerramentas}
         </Box>
+      )}
+
+      <Box
+        flex={1}
+        overflow="auto"
+        component={Paper}
+        marginX={1}
+        padding={1}
+        paddingX={3}
+        height={theme.spacing(6)}
+        display={"flex"}
+        justifyContent={"space-between"}
+        flexDirection={"column"}
+      >
+        <Box>{children}</Box>
+        {isLoading && <LinearProgress variant="indeterminate" />}
+      </Box>
     </Box>
   );
 };

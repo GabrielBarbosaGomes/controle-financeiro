@@ -1,35 +1,28 @@
 import { Environment } from "~/shared/environment";
 import { coreApi } from "../../axiosConfig";
 
-export interface IReqDebtFixed{
+export interface IPayloadDebtVariables{
     codUsuario: number,
-    codDispesaFixa: number
+    codDispesaVariable: number
 }
-
-export interface IDetailsDebtsFixed{
+export interface IDetailsDebtVariables{
     id: number,
     codUsuario: number,
     nome: string,
     valor: number,
-    valorParcela: number,
-    quantidadeParcelas: number,
-    tempoIndeterminado: boolean,
-    finalizado: boolean,
     comentario?: string,
     data: Date,
-    dataAtualizacao?: Date,
 }
 
 
-type TDebtsFixedTotalCount = {
-    data: IDetailsDebtsFixed[];
+type TDebtVariablesTotalCount = {
+    data: IDetailsDebtVariables[];
     totalCount: number;
 }
 
-
-export const getDebtFixed = async (page = 1, filter = ''): Promise<TDebtsFixedTotalCount | Error> => {
+export const getDebtVariables = async (page = 1, filter = ''): Promise<TDebtVariablesTotalCount | Error> => {
     try{
-        const urlRelative = `/Debt/fixed/get?_codUsuario=1&_page=${page}&_limit=${Environment.LIMITE_DE_LINHA}&nomeDispesaFixa=${filter}`;
+        const urlRelative = `/Debt/variable/get?_codUsuario=1&_page=${page}&_limit=${Environment.LIMITE_DE_LINHA}&nomeDispesaVariavel=${filter}`;
 
         const {data} = await coreApi.get(urlRelative);
 
@@ -40,21 +33,21 @@ export const getDebtFixed = async (page = 1, filter = ''): Promise<TDebtsFixedTo
             }
         }
 
-        return new Error('Erro ao listar as despesas fixas.');
+        return new Error('Erro ao despesas fixas');
     } catch(error) {
         console.log(error)
         return new Error((error as {message: string}).message || 'Erro ao listar as despesas fixas.');
     }
-};
+}
 
-export const getDebtFixedById = async (req: IReqDebtFixed): Promise<TDebtsFixedTotalCount | Error> => {
+export const getDebtVariablesById = async (req: IPayloadDebtVariables): Promise<TDebtVariablesTotalCount | Error> => {
     try{
-        const urlRelative = `/Debt/fixed/get`;
+        const urlRelative = `/Debt/variable/get`;
 
         const {data} = await coreApi.get(urlRelative, {
             params: {
               codUsuario: req.codUsuario,
-              codDispesaFixa: req.codDispesaFixa,
+              codDispesaVariavel: req.codDispesaVariable,
             },
           });
 
@@ -65,9 +58,9 @@ export const getDebtFixedById = async (req: IReqDebtFixed): Promise<TDebtsFixedT
             }
         }
 
-        return new Error('Erro ao buscar despesa fixa');
+        return new Error('Erro ao buscar despesa variavel');
     } catch(error) {
         console.log(error)
-        return new Error((error as {message: string}).message || 'Erro ao buscar despesa fixa.');
+        return new Error((error as {message: string}).message || 'Erro ao buscar despesa variavel.');
     }
 };

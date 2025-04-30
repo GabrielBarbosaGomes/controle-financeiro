@@ -1,4 +1,4 @@
-import { Box, LinearProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToolsDetails } from "~/components/toolsDetails/toolsDetails";
@@ -130,25 +130,27 @@ export default function DetailsDebtFixed() {
     >
           <FormProvider {...methods}>
             <form className="flex flex-col gap-4 p-4">
-              <FTextField name="nome" label="Nome" type="text" required/>
+              <FTextField name="nome" label="Nome" type="text" isRequired/>
 
-              <FTextField name="valor" label="Valor" type="number" />
+              <FTextField name="valor" label="Valor" type="number" isRequired/>
 
               <FTextField
                 name="valorParcela"
                 label="Valor da Parcela"
                 type="number"
+                isRequired
               />
 
               <FTextField
                 name="quantidadeParcelas"
                 label="Quantidade de parcelas"
                 type="number"
+                isRequired
               />
 
               <FTextField name="comentario" label="Comentário" type="text" />
 
-              {id === "Nova" && (<FDatePicker name="data" label="Data" />)}
+              {id === "Nova" && (<FDatePicker name="data" label="Data" isRequired />)}
 
               <Box className="flex">
                 <FCheckbox

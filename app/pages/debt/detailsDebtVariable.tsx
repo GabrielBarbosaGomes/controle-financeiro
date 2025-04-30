@@ -138,13 +138,13 @@ export default function DetailsDebtVariable() {
     >
       <FormProvider {...methods}>
         <form className="flex flex-col gap-4">
-          <FTextField name="nome" label="Nome" type="text" />
+          <FTextField name="nome" label="Nome" type="text" isRequired/>
 
-          <FTextField name="valor" label="Valor" type="number" />
+          <FTextField name="valor" label="Valor" type="number" isRequired/>
 
           <FTextField name="comentario" label="Comentário" type="text" />
 
-          <FDatePicker name="data" label="Data" />
+          <FDatePicker name="data" label="Data" isRequired />
         </form>
       </FormProvider>
     </LayoutPage>

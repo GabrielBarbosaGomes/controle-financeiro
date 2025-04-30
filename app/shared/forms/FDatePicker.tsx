@@ -19,15 +19,17 @@ import {
 type FDatePickerProps = TextFieldProps & {
   name: string;
   label: string;
+  isRequired?: boolean;
 };
 
-export const FDatePicker = ({ name, label }: FDatePickerProps) => {
+export const FDatePicker = ({ name, label, isRequired }: FDatePickerProps) => {
   const { control } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
+      rules={{ required: isRequired ? `${label} obrigatório` : false }}
       render={({ field, fieldState }) => (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -41,6 +43,8 @@ export const FDatePicker = ({ name, label }: FDatePickerProps) => {
                     error: !!fieldState.error,
                     helperText: fieldState.error?.message,
                     fullWidth: true,
+                    required: isRequired,
+                    focused: !!fieldState.error,
                   },
                 }}
               />

@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { ToolsDetails } from "~/components/toolsDetails/toolsDetails";
@@ -72,7 +72,7 @@ export default function DetailsIncome() {
     }
   };
 
-  const updateDebt = (back: boolean = false, data: ICreateIncome) => {
+  const updateIncomes = (back: boolean = false, data: ICreateIncome) => {
     setIsLoading(true);
 
     data.CodFaturamento = Number(id);
@@ -120,28 +120,26 @@ export default function DetailsIncome() {
           clickNew={() => navigate("/Faturamento/Novo")}
           clickBack={() => navigate("/Faturamento")}
           clickDelete={() => deleteDebts()}
-          clickSave={() =>
-            id === "Novo"
-              ? saveIncome(false, methods.getValues())
-              : updateDebt(false, methods.getValues())
-          }
+          clickSave={methods.handleSubmit((data) =>
+            id === "Nova" ? saveIncome(false, data) : updateIncomes(false, data)
+          )}
           clickSaveAndBack={() =>
-            id === "Novo"
-              ? saveIncome(true, methods.getValues())
-              : updateDebt(true, methods.getValues())
+            methods.handleSubmit((data) =>
+              id === "Nova" ? saveIncome(true, data) : updateIncomes(true, data)
+            )
           }
         />
       }
     >
       <FormProvider {...methods}>
         <form className="flex flex-col gap-4">
-          <FTextField name="origem" label="Origem Faturamento" type="text" />
+          <FTextField name="origem" label="Origem Faturamento" type="text" isRequired  />
 
-          <FTextField name="valor" label="Valor" type="number" />
+          <FTextField name="valor" label="Valor" type="number" isRequired/>
 
           <FTextField name="comentario" label="Comentário" type="text" />
 
-          <FDatePicker name="data" label="Data" />
+          <FDatePicker name="data" label="Data" isRequired/>
         </form>
       </FormProvider>
     </LayoutPage>

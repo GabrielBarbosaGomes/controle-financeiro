@@ -11,25 +11,34 @@ type FTextFieldProps = TextFieldProps & {
   name: string;
   label: string;
   type: string;
-  required?: boolean
+  isRequired?: boolean;
 };
 
-export const FTextField = ({ name, label, type, required = false, ...rest }: FTextFieldProps) => {
+export const FTextField = ({
+  name,
+  label,
+  type,
+  isRequired = false,
+  ...rest
+}: FTextFieldProps) => {
   const { control } = useFormContext();
-
   return (
     <Controller
       name={name}
       control={control}
-      rules={required ? { required: `${label} é obrigatório` } : {}}
+      rules={{ required: isRequired ? `${label} obrigatório` : false }}
       render={({ field, fieldState }) => (
         <TextField
-          label={label}
+          {...field}
+          {...rest}
+          label={fieldState.error ? "Error" : label}
           value={field.value}
           onChange={field.onChange}
           error={!!fieldState.error}
           helperText={fieldState.error?.message}
           type={type}
+          focused={!!fieldState.error}
+          required={isRequired}
         />
       )}
     />

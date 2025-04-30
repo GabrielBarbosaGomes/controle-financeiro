@@ -1,12 +1,3 @@
-// export  const Income = () => {
-//     return (
-//         <div>
-//         <h1>Faturamento</h1>
-//         <p>Essa é a página de faturamento.</p>
-//         </div>
-//     );
-// }
-
 import {
   DataGrid,
   GridActionsCellItem,
@@ -79,9 +70,28 @@ export default function Income() {
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "origem", headerName: "Origem Faturamento", flex: 1 },
-    { field: "valor", headerName: "Valor Faturamento", flex: 1 },
+    { field: "valor",
+      headerName: "Valor Faturamento",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(Number(params));
+      },
+    },
     { field: "comentario", headerName: "Comentario", flex: 1 },
-    { field: "data", headerName: "Data", flex: 1 },
+    { field: "data",
+      headerName: "Data",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.DateTimeFormat("pt-BR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date(params));
+      }
+    },
     {
       field: "actions",
       type: "actions",

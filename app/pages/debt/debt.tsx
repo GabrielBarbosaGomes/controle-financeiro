@@ -96,9 +96,27 @@ export default function Debt() {
   const columnsFixed: GridColDef[] = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "nome", headerName: "Nome Despesa", flex: 1 },
-    { field: "valor", headerName: "Valor Despesa", flex: 1 },
+    { field: "valor",
+      headerName: "Valor Despesa",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(Number(params)) }
+    },
     { field: "comentario", headerName: "comentario", flex: 1 },
-    { field: "data", headerName: "data", flex: 1 },
+    { field: "data",
+      headerName: "data",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.DateTimeFormat("pt-BR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date(params));
+      }
+    },
     { field: "finalizado", headerName: "Finalizado", width: 150 },
     {
       field: "actions",
@@ -131,9 +149,27 @@ export default function Debt() {
   const columnsVariable: GridColDef[] = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "nome", headerName: "Nome Despesa", flex: 1  },
-    { field: "valor", headerName: "Valor Despesa", flex: 1  },
+    { field: "valor",
+      headerName: "Valor Despesa",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(Number(params)) }
+      },
     { field: "comentario", headerName: "comentario", flex: 1  },
-    { field: "data", headerName: "data", flex: 1  },
+    { field: "data",
+      headerName: "data",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.DateTimeFormat("pt-BR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date(params));
+      }
+    },
     {
       field: "actions",
       type: "actions",

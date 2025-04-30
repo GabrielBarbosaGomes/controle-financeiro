@@ -1,34 +1,16 @@
-import Tab from "@mui/joy/Tab";
-import TabList from "@mui/joy/TabList";
-import TabPanel from "@mui/joy/TabPanel";
-import Tabs from "@mui/joy/Tabs";
-import {
-  Backdrop,
-  Box,
-  Fade,
-  Icon,
-  IconButton,
-  LinearProgress,
-  Modal,
-  Pagination,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableFooter,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { DataTable } from "~/components/dataTable/dataTable";
-import { HorizontalTabs } from "~/components/tabs/tabs";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridOverlay,
+  type GridColDef,
+} from "@mui/x-data-grid";
+
 import { ToolsList } from "~/components/toolsList/toolsList";
-import { Environment } from "~/shared/environment";
 import { useDebounce } from "~/shared/hooks/useDebounce";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
+import { HorizontalTabs } from "~/components/tabs/tabs";
 import {
   getDebtFixed,
   type IDetailsDebtsFixed,
@@ -38,23 +20,9 @@ import {
   type IDeleteDebt,
 } from "~/shared/services/api/debs/delete-debt";
 import {
-  getAllDebts,
-  type IListDebts,
-} from "~/shared/services/api/debs/get-debit-all";
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridOverlay,
-  type GridColDef,
-} from "@mui/x-data-grid";
-import {
   getDebtVariables,
   type IDetailsDebtVariables,
 } from "~/shared/services/api/debs/debtVariables/get-debt";
-
-function CustomNoRowsOverlay() {
-  return <GridOverlay>teste</GridOverlay>;
-}
 
 export default function Debt() {
   const navigate = useNavigate();

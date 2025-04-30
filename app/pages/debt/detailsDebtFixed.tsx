@@ -70,11 +70,11 @@ export default function DetailsDebtFixed() {
     });
   }, [methods.reset, id]);
 
-  const deleteDebts = (id: number) => {
+  const deleteDebts = () => {
     if (confirm("Realmente deseja apagar?")) {
       const reqDelete: IDeleteDebt = {
         codUsuario: 1,
-        codDispesaFixa: id,
+        codDispesaFixa: Number(id),
         nomeDispesa: "fixed",
       };
 
@@ -105,7 +105,7 @@ export default function DetailsDebtFixed() {
 
   return (
     <LayoutPage
-      titulo={id === "Nova" ? "Nova Despesa" : titleEdit}
+      titulo={id === "Nova" ? "Nova Despesa Fixa" : titleEdit}
       isLoading={isLoading}
       barraDeFerramentas={
         <ToolsDetails
@@ -116,7 +116,7 @@ export default function DetailsDebtFixed() {
           showDeleteButton={id !== "Nova"}
           clickNew={() => navigate("/Despesas/Fixed/Detalhe/Nova")}
           clickBack={() => navigate("/Despesas")}
-          clickDelete={() => deleteDebts(Number(id))}
+          clickDelete={() => deleteDebts()}
           clickSave={methods.handleSubmit((data) =>
             id === "Nova" ? saveDebt(false, data) : updateDebt(false, data)
           )}
@@ -148,7 +148,8 @@ export default function DetailsDebtFixed() {
 
               <FTextField name="comentario" label="Comentário" type="text" />
 
-              <FDatePicker name="data" label="Data" />
+              {id === "Nova" && (<FDatePicker name="data" label="Data" />)}
+
               <Box className="flex">
                 <FCheckbox
                   name="tempoIndeterminado"

@@ -29,7 +29,7 @@ type TDebtsFixedTotalCount = {
 
 export const getDebtFixed = async (page = 1, filter = ''): Promise<TDebtsFixedTotalCount | Error> => {
     try{
-        const urlRelative = `/Debt/fixed/get?_codUsuario=1&_page=${page}&_limit=${Environment.LIMITE_DE_LINHA}&nomeDispesaFixa=${filter}`;
+        const urlRelative = `/Debt/fixed/get?codUsuario=1&_page=${page}&_limit=${Environment.LIMITE_DE_LINHA}&nomeDispesaFixa=${filter}`;
 
         const {data} = await coreApi.get(urlRelative);
 

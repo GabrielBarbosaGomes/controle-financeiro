@@ -96,11 +96,11 @@ export default function DetailsDebtVariable() {
     }
   };
 
-  const deleteDebts = (id: number) => {
+  const deleteDebts = () => {
       if (confirm("Realmente deseja apagar?")) {
         const reqDelete: IDeleteDebt = {
           codUsuario: 1,
-          codDispesaFixa: id,
+          codDispesaFixa: Number(id),
           nomeDispesa: "variable",
         };
   
@@ -116,7 +116,7 @@ export default function DetailsDebtVariable() {
 
   return (
     <LayoutPage
-      titulo={id === "Nova" ? "Nova Despesa" : titleEdit}
+      titulo={id === "Nova" ? "Nova Despesa Variável" : titleEdit}
       isLoading={isLoading}
       barraDeFerramentas={
         <ToolsDetails
@@ -131,7 +131,7 @@ export default function DetailsDebtVariable() {
             id === "Nova" ? creatNewDebt(false, data) : updateDebt(false, data))}
           clickSaveAndBack={methods.handleSubmit((data) =>
             id === "Nova" ? creatNewDebt(true, data) : updateDebt(true, data))}
-          clickDelete={() => deleteDebts(Number(id))}
+          clickDelete={() => deleteDebts()}
           clickBack={() => navigate("/Despesas")}
         />
       }

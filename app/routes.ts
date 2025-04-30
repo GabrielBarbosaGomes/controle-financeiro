@@ -18,7 +18,7 @@ export function optionsSideMenu() {
                 icon: 'shopping_cart'
             },
             {
-                path: '/faturamento',
+                path: '/Faturamento',
                 label: 'Faturamento',
                 icon: 'currency_exchange'
             }
@@ -34,9 +34,9 @@ export default [
     route("/Despesas", "pages/debt/debt.tsx"),
     route("/Despesas/Fixed/Detalhe/:id", "pages/debt/detailsDebtFixed.tsx"),
     route("/Despesas/Variables/Detalhe/:id", "pages/debt/detailsDebtVariable.tsx"),
-    // route("/gastos/detalhes:id", "pages/expenses/expenses.tsx")
 
     
     /**rotas de entrada de dinheiro */
-    // route("/faturamento", "pages/income/income.tsx"),
+    route("/Faturamento", "pages/income/income.tsx"),
+    route("/Faturamento/Detalhe/:id", "pages/income/detailsIncome.tsx"),
 ] satisfies RouteConfig;

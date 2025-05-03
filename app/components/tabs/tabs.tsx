@@ -1,6 +1,15 @@
 import { Paper, Tabs, Tab } from "@mui/material";
 import type { TabProps } from "@mui/material";
-import { Children, type PropsWithChildren, cloneElement, useEffect, useState, type ReactNode, isValidElement, type ReactElement } from "react";
+import {
+  Children,
+  type PropsWithChildren,
+  cloneElement,
+  useEffect,
+  useState,
+  type ReactNode,
+  isValidElement,
+  type ReactElement,
+} from "react";
 import flattenChildren from "react-keyed-flatten-children";
 import { useAppThemeProvider } from "~/shared/context/themeContext";
 
@@ -70,15 +79,15 @@ export function HorizontalTabs({
               : () => {}
           }
           sx={{
-            borderBottom: bottomOnlyActive ? 0 :2,
-            borderColor: bottomOnlyActive ? "unset" : "primary.dark",
+            borderBottom: bottomOnlyActive ? 0 : 2,
+            borderColor: bottomOnlyActive ? "unset" : "secondary.contrastText",
             width: "100% !important",
-            bgcolor: "primary.dark",
+            bgcolor: "secondary",
             borderRadius: withoutRadius ? "0px" : "8px 8px 0px 0px",
             boxShadow: disableShadow
               ? ""
               : "0px 1px 3px 0px rgba(109, 115, 132, 0.20), 0px 2px 1px 0px rgba(109, 115, 132, 0.12), 0px 1px 1px 0px rgba(109, 115, 132, 0.14)",
-            // color: "primary.contrastText",
+            // color: "secondary.contrastText",
             "& .MuiButtonBase-root": {
               justifyContent: "center",
               alignItems: "center",
@@ -86,7 +95,9 @@ export function HorizontalTabs({
               textTransform: "capitalize",
               flex: "1",
               minWidth:
-                Children.count(props.children) > 0 ? (100 / Children.count(props.children)).toString() + "%" : "100%",
+                Children.count(props.children) > 0
+                  ? (100 / Children.count(props.children)).toString() + "%"
+                  : "100%",
             },
             "& .MuiTabs-flexContainer": {
               width: "100%",
@@ -95,8 +106,8 @@ export function HorizontalTabs({
               justifyContent: "stretch",
             },
             "& .MuiTabs-indicator": { display: "none" },
-            "& .MuiTab-textColorPrimary": {
-              color: "primary.contrastText",
+            "& .MuiTab-textColorsecondary": {
+              color: "secondary.contrastText",
             },
           }}
         >
@@ -105,15 +116,27 @@ export function HorizontalTabs({
               // child as ReactElement<HorizontalTabProps>
               return (
                 <Tab
-                  label={(child as ReactElement<HorizontalTabProps>)?.props?.label}
+                  label={
+                    (child as ReactElement<HorizontalTabProps>)?.props?.label
+                  }
                   // disabled={!!child.props.disabled}
                   // icon={child.props.icon}
                   sx={{
-                    bgcolor: currentTab === index ? "primary.dark" : "inherit",
+                    bgcolor:
+                      currentTab === index
+                        ? (theme) => theme.palette.secondary.main
+                        : (theme) => theme.palette.primary.main,
+                    color: (theme) => theme.palette.primary.contrastText,
+                    "&.Mui-selected": {
+                      color: (theme) => theme.palette.primary.contrastText,
+                    },
                     pointerEvents: "auto !important",
                     borderBottom: bottomOnlyActive ? 1 : 0,
-                    borderColor: bottomOnlyActive && currentTab === index ? "primary.main" : "pink",
-                    // color: currentTab === index ? "primary.dark" : "primary.contrastText",
+                    borderColor:
+                      bottomOnlyActive && currentTab === index
+                        ? "secondary.main"
+                        : "inherit",
+                    // color: currentTab === index ? "secondary.dark" : "secondary.contrastText",
                   }}
                 />
               );
@@ -125,10 +148,13 @@ export function HorizontalTabs({
       <Paper>
         {Children.map(flattenChildren(props.children), (child, index) => {
           if (isValidElement(child) && child.type === HorizontalTab) {
-            return cloneElement<PrivateHorizontalTabProps>(child as ReactElement<PrivateHorizontalTabProps>, {
-              index,
-              currentTab,
-            });
+            return cloneElement<PrivateHorizontalTabProps>(
+              child as ReactElement<PrivateHorizontalTabProps>,
+              {
+                index,
+                currentTab,
+              }
+            );
           }
           return child;
         })}
@@ -149,7 +175,8 @@ type HorizontalTabProps = {
 };
 
 function HorizontalTab(props: HorizontalTabProps) {
-  const { index, currentTab, ...other } = props as PrivateHorizontalTabProps & HorizontalTabProps;
+  const { index, currentTab, ...other } = props as PrivateHorizontalTabProps &
+    HorizontalTabProps;
   return (
     <TabPanel index={index} value={currentTab} {...other}>
       {props.children}

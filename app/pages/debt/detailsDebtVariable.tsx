@@ -12,7 +12,6 @@ import {
 } from "~/shared/services/api/debs/debtVariables/create-debt";
 import {
   getDebtVariablesById,
-  type IDetailsDebtVariables,
 } from "~/shared/services/api/debs/debtVariables/get-debt";
 import { updateDebtVariable } from "~/shared/services/api/debs/debtVariables/update-debt";
 import { deleteDebt, type IDeleteDebt } from "~/shared/services/api/debs/delete-debt";

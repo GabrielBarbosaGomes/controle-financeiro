@@ -14,17 +14,31 @@ export interface IDetailsDebtVariables{
     data: Date,
 }
 
+export type filter = {
+    busca: string,
+    dateDespesa: Date,
+    pagina: number,
+}
+
 
 type TDebtVariablesTotalCount = {
     data: IDetailsDebtVariables[];
     totalCount: number;
 }
 
-export const getDebtVariables = async (page = 1, filter = ''): Promise<TDebtVariablesTotalCount | Error> => {
+export const getDebtVariables = async (searchFilters: filter): Promise<TDebtVariablesTotalCount | Error> => {
     try{
-        const urlRelative = `/Debt/variable/get?_codUsuario=1&_page=${page}&_limit=${Environment.LIMITE_DE_LINHA}&nomeDispesaVariavel=${filter}`;
+        const urlRelative = `/Debt/variable/get`;
 
-        const {data} = await coreApi.get(urlRelative);
+        const params = {
+            codUsuario: 1,
+            _page: searchFilters.pagina,
+            _limit: Environment.LIMITE_DE_LINHA,
+            nomeDispesaVariavel: searchFilters.busca,
+            dataDispesaVariavel: searchFilters.dateDespesa,
+        };
+
+        const { data } = await coreApi.get(urlRelative, { params });
 
         if(data){
             return {

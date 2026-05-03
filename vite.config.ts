@@ -7,5 +7,5 @@ export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   optimizeDeps: {
     include: ["@mui/icons-material", "@mui/material"]
-  }
+  },
 });

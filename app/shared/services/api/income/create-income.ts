@@ -5,7 +5,7 @@ export interface ICreateIncome {
     codUsuario: number,
     CodFaturamento?: number,
     origem: string,
-    valor: number,
+    valor: number | null,
     comentario: string
     data: Date,
 }
@@ -13,6 +13,8 @@ export interface ICreateIncome {
 export const createIncome = async (req: ICreateIncome): Promise<void | Error> => {
     try {
         const urlRelative = "/Income/insert";
+
+        if(req.valor === null) return new Error('Valor não pode ser nulo.');
 
          await coreApi.post(urlRelative, {
                 codUsuario: req.codUsuario,

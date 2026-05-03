@@ -6,12 +6,12 @@ export const DarkTheme = createTheme({
         mode: 'dark',
         primary:{
             main: grey[500],
-            dark: grey[800],
+            // dark: grey[800],
             contrastText: '#fff'
         },
         secondary:{
             main: grey[600],
-            dark: blue[200],
+            // dark: blue[200],
             contrastText: '#fff'
         },
         background:{

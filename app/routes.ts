@@ -37,6 +37,7 @@ export default [
     route("/Despesas/Variables/Detalhe/:id", "pages/debt/detailsDebtVariable.tsx"),
 
     /**rotas de entrada de dinheiro */
-    route("/Faturamento", "pages/income/income.tsx"),
+    route("/Faturamento", "pages/income/incomeList.tsx"),
+    route("/Faturamento/Mes/:mes", "pages/income/income.tsx"),
     route("/Faturamento/Detalhe/:id", "pages/income/detailsIncome.tsx"),
 ] satisfies RouteConfig;

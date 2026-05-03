@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { ToolsDetails } from "~/components/toolsDetails/toolsDetails";
+import { FCurrencyField } from "~/shared/forms/FCurrencyField";
 import { FDatePicker } from "~/shared/forms/FDatePicker";
 import { FTextField } from "~/shared/forms/FTextField";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
@@ -12,7 +13,6 @@ import {
 } from "~/shared/services/api/debs/debtVariables/create-debt";
 import {
   getDebtVariablesById,
-  type IDetailsDebtVariables,
 } from "~/shared/services/api/debs/debtVariables/get-debt";
 import { updateDebtVariable } from "~/shared/services/api/debs/debtVariables/update-debt";
 import { deleteDebt, type IDeleteDebt } from "~/shared/services/api/debs/delete-debt";
@@ -26,7 +26,7 @@ export default function DetailsDebtVariable() {
   const defaultData = {
     codUsuario: 1,
     nome: "",
-    valor: 0,
+    valor: null,
     comentario: "",
     data: dayjs().toDate(),
   };
@@ -140,7 +140,7 @@ export default function DetailsDebtVariable() {
         <form className="flex flex-col gap-4">
           <FTextField name="nome" label="Nome" type="text" isRequired/>
 
-          <FTextField name="valor" label="Valor" type="number" isRequired/>
+          <FCurrencyField name="valor" label="Valor" isRequired/>
 
           <FTextField name="comentario" label="Comentário" type="text" />
 

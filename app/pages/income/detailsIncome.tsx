@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { ToolsDetails } from "~/components/toolsDetails/toolsDetails";
+import { FCurrencyField } from "~/shared/forms/FCurrencyField";
 import { FDatePicker } from "~/shared/forms/FDatePicker";
 import { FTextField } from "~/shared/forms/FTextField";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
@@ -25,7 +26,7 @@ export default function DetailsIncome() {
   const defaultData:ICreateIncome = {
     codUsuario: 1,
     origem: "",
-    valor: 0,
+    valor: null,
     comentario: "",
     data: new Date()
   };
@@ -135,7 +136,7 @@ export default function DetailsIncome() {
         <form className="flex flex-col gap-4">
           <FTextField name="origem" label="Origem Faturamento" type="text" isRequired  />
 
-          <FTextField name="valor" label="Valor" type="number" isRequired/>
+          <FCurrencyField name="valor" label="Valor" isRequired/>
 
           <FTextField name="comentario" label="Comentário" type="text" />
 

@@ -25,6 +25,7 @@ import dayjs from "dayjs";
 import { FCheckbox } from "~/shared/forms/FCheckbox";
 import { FDatePicker } from "~/shared/forms/FDatePicker";
 import { updateDebtFixed } from "~/shared/services/api/debs/debtFixed/update-debt";
+import { FCurrencyField } from "~/shared/forms/FCurrencyField";
 
 export default function DetailsDebtFixed() {
   const { id = "Nova" } = useParams<"id">();
@@ -35,7 +36,7 @@ export default function DetailsDebtFixed() {
   const defaultData = {
     codUsuario: 1,
     nome: "",
-    valor: 0,
+    valor: null,
     valorParcela: 0,
     quantidadeParcelas: 0,
     tempoIndeterminado: false,
@@ -132,12 +133,11 @@ export default function DetailsDebtFixed() {
             <form className="flex flex-col gap-4 p-4">
               <FTextField name="nome" label="Nome" type="text" isRequired/>
 
-              <FTextField name="valor" label="Valor" type="number" isRequired/>
+              <FCurrencyField name="valor" label="Valor" isRequired/>
 
-              <FTextField
+              <FCurrencyField
                 name="valorParcela"
                 label="Valor da Parcela"
-                type="number"
                 isRequired
               />
 

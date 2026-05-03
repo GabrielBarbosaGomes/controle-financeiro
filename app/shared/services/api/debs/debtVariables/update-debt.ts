@@ -5,6 +5,8 @@ export const updateDebtVariable = async (payload: ICreateDebtVariablePayload): P
     try {
         const urlRelative = `/Debt/variable/update`;
 
+        if(payload.valor === null) return new Error('Valor não pode ser nulo.');
+
         await coreApi.put(urlRelative, {
             id: payload.id,
             codUsuario: payload.codUsuario,

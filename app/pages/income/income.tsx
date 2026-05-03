@@ -5,7 +5,7 @@ import {
   type GridColDef,
 } from "@mui/x-data-grid";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { ToolsList } from "~/components/toolsList/toolsList";
 import { useDebounce } from "~/shared/hooks/useDebounce";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
@@ -16,6 +16,9 @@ export default function Income() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [dataIncome, setDataIncome] = useState<IIncome[]>();
+
+  const {mes} = useParams<"mes">();
+
 
   const { debounce } = useDebounce();
   const navigate = useNavigate();
@@ -32,7 +35,7 @@ export default function Income() {
     setIsLoading(true);
 
     debounce(() => {
-      getIncome(page, search).then((result) => {
+      getIncome(page, search, new Date(mes!)).then((result) => {
         setIsLoading(false);
 
         if (result instanceof Error) {

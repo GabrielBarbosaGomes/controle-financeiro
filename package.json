@@ -26,6 +26,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
     "react-keyed-flatten-children": "^5.0.0",
+    "react-number-format": "^5.4.4",
     "react-router": "^7.1.5"
   },
   "devDependencies": {

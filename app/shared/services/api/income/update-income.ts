@@ -5,6 +5,8 @@ export const updateIncome = async (payload: ICreateIncome): Promise<void | Error
     try {
         const urlRelative = `/Income/update`;
 
+        if(payload.valor === null) return new Error('Valor não pode ser nulo.');
+
          await coreApi.put(urlRelative, {
                 codUsuario: payload.codUsuario,
                 id: payload.CodFaturamento,

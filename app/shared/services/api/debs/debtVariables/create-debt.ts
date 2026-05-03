@@ -4,7 +4,7 @@ export type ICreateDebtVariablePayload = {
     id: number
     codUsuario: number
     nome: string
-    valor: number
+    valor: number | null
     comentario: string
     data: Date
 
@@ -13,6 +13,9 @@ export type ICreateDebtVariablePayload = {
 export const createDebtVariable = async (payload: ICreateDebtVariablePayload): Promise<void | Error> => {
     try {
         const urlRelative = `/Debt/variable/insert`;
+
+        if(payload.valor === null) return new Error('Valor não pode ser nulo.');
+
         await coreApi.post(urlRelative, {
             codUsuario: payload.codUsuario,
             nome: payload.nome,

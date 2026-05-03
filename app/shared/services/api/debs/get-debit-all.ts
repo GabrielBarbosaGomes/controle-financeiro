@@ -11,10 +11,21 @@ type TDebtsTotalCount = {
     totalCount: number;
 }
 
-export const getAllDebts = async (page = 1, filter = ''): Promise<TDebtsTotalCount | Error> => {
+export type IPropsPayloadGetAllDebts = {
+    page: number;
+    filter: Date;
+}
+
+export const getAllDebts = async (payload: IPropsPayloadGetAllDebts): Promise<TDebtsTotalCount | Error> => {
     try{
-        const urlRelative = `/Debt/all/get?_page=${page}&_limit=${Environment.LIMITE_DE_LINHA}&mesAno=${filter}`;
-        const {data} = await coreApi.get(urlRelative);
+        const urlRelative = `/Debt/all/get`;
+        const params = {
+            _page: payload.page,
+            _limit: Environment.LIMITE_DE_LINHA,
+            mesAno: payload.filter,
+        }
+
+        const {data} = await coreApi.get(urlRelative, {params});
         if(data) {
             return {
                 data,

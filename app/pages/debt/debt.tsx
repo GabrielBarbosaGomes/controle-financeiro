@@ -54,29 +54,33 @@ export default function Debt() {
     setIsLoading(true);
 
     debounce(() => {
-      getDebtFixed(searchFilters).then((result) => {
-        setIsLoading(false);
-
-        if (result instanceof Error) {
-          alert(result.message);
-          return;
-        }
-        setDataDebtFixed(result.data);
-        setTotalCount(result.totalCount);
-      });
-
-      getDebtVariables(searchFilters).then((result) => {
-        setIsLoading(false);
-
-        if (result instanceof Error) {
-          alert(result.message);
-          return;
-        }
-        setDataDebtVariavel(result.data);
-        setTotalCount(result.totalCount);
-      });
+      if(abaSelected === 0) {
+        getDebtFixed(searchFilters).then((result) => {
+          setIsLoading(false);
+  
+          if (result instanceof Error) {
+            alert(result.message);
+            return;
+          }
+          setDataDebtFixed(result.data);
+          setTotalCount(result.totalCount);
+        });
+      }
+      
+      if(abaSelected === 1) {
+        getDebtVariables(searchFilters).then((result) => {
+          setIsLoading(false);
+  
+          if (result instanceof Error) {
+            alert(result.message);
+            return;
+          }
+          setDataDebtVariavel(result.data);
+          setTotalCount(result.totalCount);
+        });
+      }
     });
-  }, [searchFilters]);
+  }, [searchFilters, abaSelected]);
 
   const handleDelete = (id: number) => {
     if (confirm("Realmente deseja apagar?")) {

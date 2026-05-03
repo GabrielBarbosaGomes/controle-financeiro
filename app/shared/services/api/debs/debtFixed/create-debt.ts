@@ -4,8 +4,8 @@ export interface IDebtFixed {
     codUsuario: number,
     CodDespesa: number,
     nome: string,
-    valor: number,
-    valorParcela: number,
+    valor: number | null,
+    valorParcela: number | null,
     quantidadeParcelas: number,
     tempoIndeterminado: boolean,
     finalizado: boolean,
@@ -16,6 +16,9 @@ export interface IDebtFixed {
 export const createDebtFixed = async (req: IDebtFixed): Promise<void | Error> => {
     try {
         const urlRelative = `/Debt/fixed/insert`;
+
+        if(req.valorParcela === null || req.valor === null) return new Error('Valor ou valor da parcela não pode ser nulo.');
+        if(req.quantidadeParcelas <= 0) return new Error('Quantidade de parcelas deve ser maior que zero.');
 
          await coreApi.post(urlRelative, {
                 codUsuario: req.codUsuario,

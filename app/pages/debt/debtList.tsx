@@ -1,22 +1,33 @@
 import { Box, Icon, Paper } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import { ToolsList } from "~/components/toolsList/toolsList";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
 import {
   getAllDebts,
   type IListDebts,
+  type IPropsPayloadGetAllDebts,
 } from "~/shared/services/api/debs/get-debit-all";
 
 export default function DebtList() {
   const [debtData, setDebtData] = useState<IListDebts[]>();
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // const filter = searchParams.get("busca") || "";
+  const searchFilters = useMemo<IPropsPayloadGetAllDebts>(() => {
+      return {
+        filter: new Date(searchParams.get("busca")!) || new Date(),
+        page: Number(searchParams.get("pagina") || "1"),
+      };
+    }, [searchParams]);
+  
 
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
-    getAllDebts(1, "").then((result) => {
+    getAllDebts(searchFilters).then((result) => {
       setIsLoading(false);
       if (result instanceof Error) {
         alert(result.message);
@@ -35,6 +46,10 @@ export default function DebtList() {
       <ToolsList 
        showInputResearch
        showButton={false}
+       researchText={searchFilters.filter.toString()}
+       changeTextResearch={(text) =>
+        setSearchParams({ busca: text, page: "1" }, { replace: true })
+      }
       />
     }
     >

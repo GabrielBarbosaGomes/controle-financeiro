@@ -1,154 +1,312 @@
-import {
-    Icon,
-  IconButton,
-  LinearProgress,
-  Pagination,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableFooter,
-  TableHead,
-  TableRow,
-} from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridOverlay,
+  type GridColDef,
+} from "@mui/x-data-grid";
+
 import { ToolsList } from "~/components/toolsList/toolsList";
-import { Environment } from "~/shared/environment";
 import { useDebounce } from "~/shared/hooks/useDebounce";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
+import { HorizontalTabs } from "~/components/tabs/tabs";
 import {
-  ExiteMoneyService,
-  type IListDebts,
-} from "~/shared/services/api/exitMoney/exitMoneyService";
+  getDebtFixed,
+  type IDetailsDebtsFixed,
+} from "~/shared/services/api/debs/debtFixed/get-debt";
+import {
+  deleteDebt,
+  type IDeleteDebt,
+} from "~/shared/services/api/debs/delete-debt";
+import {
+  getDebtVariables,
+  type IDetailsDebtVariables,
+} from "~/shared/services/api/debs/debtVariables/get-debt";
 
 export default function Debt() {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { debounce } = useDebounce();
-  const [rows, setRows] = useState<IListDebts[]>();
+  const [dataDebtFixed, setDataDebtFixed] = useState<IDetailsDebtsFixed[]>();
+  const [dataDebtVariavel, setDataDebtVariavel] =
+    useState<IDetailsDebtVariables[]>();
   const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [abaSelected, setAbaSelected] = useState(0);
+  const navigate = useNavigate();
+  const { debounce } = useDebounce();
+  const { mes } = useParams<"mes">();
 
-  const search = useMemo(() => {
-    return searchParams.get("busca") || "";
-  }, [searchParams]);
+  type filterDebts = {
+    busca: string;
+    dateDespesa: Date;
+    pagina: number;
+  };
 
-  const page = useMemo(() => {
-    return Number(searchParams.get("pagina") || "1");
+  const searchFilters = useMemo<filterDebts>(() => {
+    return {
+      busca: searchParams.get("busca") || "",
+      dateDespesa: new Date(mes!),
+      pagina: Number(searchParams.get("pagina") || "1"),
+    };
   }, [searchParams]);
 
   useEffect(() => {
     setIsLoading(true);
 
     debounce(() => {
-      ExiteMoneyService.getAll(page, search).then((result) => {
-        setIsLoading(false);
+      if(abaSelected === 0) {
+        getDebtFixed(searchFilters).then((result) => {
+          setIsLoading(false);
+  
+          if (result instanceof Error) {
+            alert(result.message);
+            return;
+          }
+          setDataDebtFixed(result.data);
+          setTotalCount(result.totalCount);
+        });
+      }
+      
+      if(abaSelected === 1) {
+        getDebtVariables(searchFilters).then((result) => {
+          setIsLoading(false);
+  
+          if (result instanceof Error) {
+            alert(result.message);
+            return;
+          }
+          setDataDebtVariavel(result.data);
+          setTotalCount(result.totalCount);
+        });
+      }
+    });
+  }, [searchFilters, abaSelected]);
 
+  const handleDelete = (id: number) => {
+    if (confirm("Realmente deseja apagar?")) {
+      const reqDelete: IDeleteDebt = {
+        codUsuario: 1,
+        codDispesaFixa: id,
+        nomeDispesa: "fixed",
+      };
+
+      deleteDebt(reqDelete).then((result) => {
         if (result instanceof Error) {
           alert(result.message);
           return;
         }
-
-        setRows(result.data);
-        setTotalCount(result.totalCount);
+        setDataDebtFixed((olddataDebtFixed) => {
+          return [
+            ...(olddataDebtFixed ?? []).filter((oldRow) => oldRow.id !== id),
+          ];
+        });
+        alert("registro apagado com sucesso!");
       });
-    });
-  }, [search, page]);
-
-  const handleDelete = (id: number) => {
-    console.log('delete', id)
-    if(confirm('Realmente deseja apagar?')){
-        ExiteMoneyService.deleteById(id)
-        .then(result => {
-            if( result instanceof Error){
-                alert(result.message)
-                return
-            }
-            setRows(oldRows => {
-                return [
-                    ...(oldRows ?? []).filter(oldRow => oldRow.codDispesaFixa !== id)
-                ]
-            })
-            alert('registro apagado com sucesso!')
-        })
     }
-  }
+  };
+
+  const columnsFixed: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "nome", headerName: "Nome Despesa", flex: 1 },
+    {
+      field: "valor",
+      headerName: "Valor Despesa",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(Number(params));
+      },
+    },
+    { field: "comentario", headerName: "comentario", flex: 1 },
+    {
+      field: "data",
+      headerName: "data",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.DateTimeFormat("pt-BR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date(params));
+      },
+    },
+    { field: "finalizado", headerName: "Finalizado", width: 150 },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            // icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={() => navigate(`/Despesas/Fixed/Detalhe/${id}`)}
+            color="inherit"
+            showInMenu={true}
+          />,
+          <GridActionsCellItem
+            // icon={<DeleteIcon />}
+            label="Delete"
+            onClick={() => handleDelete(Number(id))}
+            color="inherit"
+            showInMenu={true}
+          />,
+        ];
+      },
+    },
+  ];
+
+  const columnsVariable: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "nome", headerName: "Nome Despesa", flex: 1 },
+    {
+      field: "valor",
+      headerName: "Valor Despesa",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(Number(params));
+      },
+    },
+    { field: "comentario", headerName: "comentario", flex: 1 },
+    {
+      field: "data",
+      headerName: "data",
+      flex: 1,
+      valueFormatter: (params) => {
+        return new Intl.DateTimeFormat("pt-BR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date(params));
+      },
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            // icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={() => navigate(`/Despesas/Variables/Detalhe/${id}`)}
+            color="inherit"
+            showInMenu={true}
+          />,
+          <GridActionsCellItem
+            // icon={<DeleteIcon />}
+            label="Delete"
+            onClick={() => handleDelete(Number(id))}
+            color="inherit"
+            showInMenu={true}
+          />,
+        ];
+      },
+    },
+  ];
 
   return (
     <LayoutPage
       titulo="Despesas"
+      isLoading={isLoading}
       barraDeFerramentas={
         <ToolsList
           showInputResearch
           showButton
           textButton="Nova"
-          clickButton={()=> navigate('/Despesas/Detalhe/Nova')}
-          researchText={search}
+          clickButton={() =>
+            abaSelected === 0
+              ? navigate("/Despesas/Fixed/Detalhe/Nova")
+              : navigate("/Despesas/Variables/Detalhe/Nova")
+          }
+          researchText={searchFilters.busca}
           changeTextResearch={(text) =>
-            setSearchParams({ busca: text, page: '1' }, { replace: true })
+            setSearchParams({ busca: text, page: "1" }, { replace: true })
           }
         />
       }
     >
-      <TableContainer
-        component={Paper}
-        variant="outlined"
-        sx={{ margin: 1, width: "auto" }}
+      <HorizontalTabs
+        selectedTab={0}
+        onChangeTab={(index) => {
+          setAbaSelected(index);
+        }}
       >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Ações</TableCell>
-              <TableCell>Nome</TableCell>
-              <TableCell>Valor</TableCell>
-              <TableCell>Comentario</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows?.map((row) => (
-              <TableRow key={row.codDispesaFixa}>
-                <TableCell>
-                    <IconButton size="small" onClick={()=> handleDelete(row.codDispesaFixa)}>
-                        <Icon>delete</Icon>
-                    </IconButton>
-                    <IconButton size="small" onClick={() => navigate(`/Despesas/Detalhe/${row.codDispesaFixa}`)}>
-                        <Icon>edit</Icon>
-                    </IconButton>
-                </TableCell>
-                <TableCell>{row.nomeDispesaFixa}</TableCell>
-                <TableCell>{row.valorDispesaFixa}</TableCell>
-                <TableCell>{row.comentarioDispesaFixa}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-            {totalCount === 0 && !isLoading && (
-                <caption>{Environment.LISTAGEM_VAZIA}</caption>
-            )}
+        <HorizontalTabs.Tab label="fixo">
+          <DataGrid
+            columns={columnsFixed}
+            rows={dataDebtFixed ?? []}
+            loading={isLoading}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                  page: searchFilters.pagina - 1,
+                },
+              },
+            }}
+            onPaginationModelChange={(model) => {
+              setSearchParams(
+                {
+                  busca: searchFilters.busca,
+                  pagina: (model.page + 1).toString(),
+                },
+                { replace: true }
+              );
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            disableColumnSorting
+            onRowClick={(row) => navigate("/Despesas/Fixed/Detalhe/" + row.id)}
+            slots={{
+              noRowsOverlay: () => <GridOverlay>Nada Encontrado!</GridOverlay>,
+            }}
+          />
+        </HorizontalTabs.Tab>
 
-          <TableFooter>
-            {isLoading && (
-              <TableRow>
-                <TableCell colSpan={3}>
-                  <LinearProgress variant="indeterminate" />
-                </TableCell>
-              </TableRow>
-            )}
-            {(totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHA) && (
-              <TableRow>
-                <TableCell colSpan={Math.ceil(totalCount / Environment.LIMITE_DE_LINHA)}>
-                <Pagination
-                    page={page}
-                    count={10}
-                    onChange={(_, newPage)=> setSearchParams({ search, page: newPage.toString()}, {replace: true})}
-                />
-                </TableCell>
-              </TableRow>
-            )}
-          </TableFooter>
-        </Table>
-      </TableContainer>
+        <HorizontalTabs.Tab label="variavel">
+          <DataGrid
+            columns={columnsVariable}
+            rows={dataDebtVariavel ?? []}
+            loading={isLoading}
+            disableColumnSorting
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                  page: searchFilters.pagina - 1,
+                },
+              },
+            }}
+            onPaginationModelChange={(model) => {
+              setSearchParams(
+                {
+                  busca: searchFilters.busca,
+                  pagina: (model.page + 1).toString(),
+                },
+                { replace: true }
+              );
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            onRowClick={(row) =>
+              navigate("/Despesas/Variables/Detalhe/" + row.id)
+            }
+            slots={{
+              noRowsOverlay: () => <GridOverlay>Nada Encontrado!</GridOverlay>,
+            }}
+          />
+        </HorizontalTabs.Tab>
+      </HorizontalTabs>
     </LayoutPage>
   );
 }

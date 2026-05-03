@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -38,11 +39,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body style={{margin: 0, padding: 0}}>
       <AppThemeProvider>
-      <DrawerProvider >
-        <SideMenu>
+        <DrawerProvider>
           {children}
-        </SideMenu>
-      </DrawerProvider>
+        </DrawerProvider>
       </AppThemeProvider>
         <ScrollRestoration />
         <Scripts />
@@ -52,7 +51,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const { pathname } = useLocation();
+
+  if (pathname === "/") {
+    return <Outlet />;
+  }
+
+  return (
+    <SideMenu>
+      <Outlet />
+    </SideMenu>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

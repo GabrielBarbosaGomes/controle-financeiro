@@ -71,6 +71,27 @@ describe("DebtList page", () => {
     });
   });
 
+  it("deve exibir mensagem de 'nenhum registro encontrado' quando a lista vem vazia", async () => {
+    mockGetAllDebts.mockResolvedValueOnce({ data: [], totalCount: 0 });
+
+    renderWithProviders(<DebtList />, { initialEntries: ["/Despesas"] });
+
+    await waitFor(() => {
+      expect(screen.getByText("Nenhum registro encontrado.")).toBeInTheDocument();
+    });
+  });
+
+  it("não deve exibir mensagem de 'nenhum registro encontrado' quando há dados", async () => {
+    const mockData = [{ mesAno: new Date("2024-01-01"), totalGasto: 100 }];
+    mockGetAllDebts.mockResolvedValueOnce({ data: mockData, totalCount: 1 });
+
+    renderWithProviders(<DebtList />, { initialEntries: ["/Despesas"] });
+
+    await waitFor(() => {
+      expect(screen.queryByText("Nenhum registro encontrado.")).not.toBeInTheDocument();
+    });
+  });
+
   it("deve tratar erro da API sem quebrar a UI", async () => {
     const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
     mockGetAllDebts.mockResolvedValueOnce(new Error("Falha ao buscar dados"));

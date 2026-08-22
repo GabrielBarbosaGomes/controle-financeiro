@@ -27,6 +27,7 @@ export default function DetailsDebtVariable() {
     codUsuario: 1,
     nome: "",
     valor: null,
+    categoria: "",
     comentario: "",
     data: dayjs().toDate(),
   };
@@ -141,6 +142,8 @@ export default function DetailsDebtVariable() {
           <FTextField name="nome" label="Nome" type="text" isRequired/>
 
           <FCurrencyField name="valor" label="Valor" isRequired/>
+
+          <FTextField name="categoria" label="Categoria" type="text" />
 
           <FTextField name="comentario" label="Comentário" type="text" />
 

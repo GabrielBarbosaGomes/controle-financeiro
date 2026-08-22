@@ -41,6 +41,7 @@ export default function DetailsDebtFixed() {
     quantidadeParcelas: 0,
     tempoIndeterminado: false,
     finalizado: false,
+    categoria: "",
     comentario: "",
     data: dayjs().toDate(),
   };
@@ -147,6 +148,8 @@ export default function DetailsDebtFixed() {
                 type="number"
                 isRequired
               />
+
+              <FTextField name="categoria" label="Categoria" type="text" />
 
               <FTextField name="comentario" label="Comentário" type="text" />
 

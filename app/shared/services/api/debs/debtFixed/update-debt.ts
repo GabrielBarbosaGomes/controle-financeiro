@@ -18,6 +18,7 @@ export const updateDebtFixed = async (payload: IDebtFixed): Promise<void | Error
                 quantidadeParcelas: payload.quantidadeParcelas,
                 tempoIndeterminado: payload.tempoIndeterminado,
                 finalizado: payload.finalizado,
+                categoria: payload.categoria,
                 comentario: payload.comentario,
         });
 

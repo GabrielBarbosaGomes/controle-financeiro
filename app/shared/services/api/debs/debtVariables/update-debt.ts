@@ -12,6 +12,7 @@ export const updateDebtVariable = async (payload: ICreateDebtVariablePayload): P
             codUsuario: payload.codUsuario,
             nome: payload.nome,
             valor: payload.valor,
+            categoria: payload.categoria,
             comentario: payload.comentario,
             data: payload.data,
         });

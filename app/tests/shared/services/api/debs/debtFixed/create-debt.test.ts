@@ -21,6 +21,7 @@ const payloadValido: IDebtFixed = {
   quantidadeParcelas: 12,
   tempoIndeterminado: false,
   finalizado: false,
+  categoria: "Moradia",
   comentario: "Plano fibra",
   data: new Date("2024-01-01"),
 };

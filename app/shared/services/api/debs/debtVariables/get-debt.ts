@@ -10,6 +10,7 @@ export interface IDetailsDebtVariables{
     codUsuario: number,
     nome: string,
     valor: number,
+    categoria?: string,
     comentario?: string,
     data: Date,
 }

@@ -1,100 +1,85 @@
-# Welcome to React Router!
+# 💰 Controle Financeiro — Front-end
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Front-end de um sistema de controle financeiro pessoal: cadastro de despesas fixas e variáveis, receitas, e um dashboard com visão geral da saúde financeira (saldo atual, evolução mensal, maior categoria de gasto).
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Este repositório é o cliente web. A API que ele consome fica em [`controle-financeiro-api`](https://github.com/GabrielBarbosaGomes/controle-financeiro-api) (C#/.NET). Contexto completo do projeto, decisões de arquitetura e histórico de mudanças estão em [`docs/CONTEXTO-DESENVOLVIMENTO.md`](docs/CONTEXTO-DESENVOLVIMENTO.md).
 
-## Features
+## Funcionalidades
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- Cadastro, edição e exclusão de despesas fixas (recorrentes, ex. aluguel, internet) e variáveis (pontuais).
+- Cadastro de receitas (faturamento).
+- Categorização das despesas (Moradia, Alimentação, Transporte, etc.).
+- Listagem mensal com o total gasto por mês.
+- Import em lote de uma planilha de gastos (processado pelo back-end).
+- Login com tema claro/escuro.
 
-## Getting Started
+## Stack e sistema de design
 
-### Installation
+- **[React Router v7](https://reactrouter.com/)** em modo full-stack (SSR), TypeScript.
+- **[MUI (Material UI) v6](https://mui.com/)** como biblioteca de componentes — inclui **MUI X** (`DataGrid` para listagens, `Charts` para o dashboard, `DatePickers`).
+- **Tema claro/escuro** próprio (`app/shared/themes/light.ts` e `dark.ts`), com paleta customizada (azul no claro, cinza no escuro) e alternância via `themeContext` — o botão de tema fica no menu lateral.
+- **Tailwind CSS v4** para espaçamento/layout utilitário, junto com o sistema de `sx`/tema do MUI.
+- **Componentes de formulário próprios** (`app/shared/forms/`: `FTextField`, `FCurrencyField`, `FDatePicker`, `FCheckbox`) que padronizam a integração entre `react-hook-form` e os inputs do MUI — todo formulário do app usa esse mesmo padrão em vez de MUI puro.
+- **Layout padrão de página** (`LayoutPage`, em `app/shared/layouts/`): título, barra de ferramentas (`ToolsList`/`ToolsDetails`) e um card de conteúdo com indicador de carregamento — todas as telas seguem essa mesma estrutura.
+- **`axios`** encapsulado num client único (`app/shared/services/api/axiosConfig`) com interceptors de sucesso/erro; cada chamada de API vira uma função isolada em `app/shared/services/api/<feature>/`.
 
-Install the dependencies:
+## Estrutura de pastas
+
+```
+app/
+├── pages/<feature>/        # telas (debt, income, home, login)
+├── components/             # componentes reutilizáveis (sideMenu, tabs, dataTable...)
+├── shared/
+│   ├── forms/               # F* — wrappers de input padronizados
+│   ├── layouts/              # LayoutPage
+│   ├── themes/                # tema claro/escuro (MUI)
+│   ├── context/                # ThemeContext, DrawerContext
+│   ├── services/api/            # 1 arquivo por chamada de API
+│   └── environment/              # constantes globais (URL da API, etc.)
+├── tests/                   # espelha a estrutura de app/ (Vitest + Testing Library)
+└── routes.ts                # definição de rotas
+```
+
+## Como rodar
+
+### Pré-requisitos
+
+- [Node.js](https://nodejs.org/) 20+ e npm.
+- A [API](https://github.com/GabrielBarbosaGomes/controle-financeiro-api) rodando localmente (veja o README de lá) — sem ela, as telas carregam mas não retornam dados.
+
+### Instalação
 
 ```bash
 npm install
 ```
 
-### Development
-
-Start the development server with HMR:
+### Ambiente de desenvolvimento
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Abre em `http://localhost:5173`. A URL base da API consumida pelo front fica em `app/shared/environment/index.ts` (`Environment.URL_BASE`) — por padrão aponta para `https://localhost:7262/Api`, que é onde a API sobe localmente.
 
-## Building for Production
+### Testes
 
-Create a production build:
+```bash
+npm run test:run       # roda a suíte uma vez
+npm run test           # modo watch
+npm run test:coverage  # com cobertura
+```
+
+### Typecheck
+
+```bash
+npm run typecheck
+```
+
+### Build de produção
 
 ```bash
 npm run build
+npm run start   # serve o build gerado
 ```
 
-## Deployment
-
-### Docker Deployment
-
-This template includes three Dockerfiles optimized for different package managers:
-
-- `Dockerfile` - for npm
-- `Dockerfile.pnpm` - for pnpm
-- `Dockerfile.bun` - for bun
-
-To build and run using Docker:
-
-```bash
-# For npm
-docker build -t my-app .
-
-# For pnpm
-docker build -f Dockerfile.pnpm -t my-app .
-
-# For bun
-docker build -f Dockerfile.bun -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+Também há `Dockerfile`/`Dockerfile.pnpm`/`Dockerfile.bun` prontos para deploy containerizado.

@@ -9,6 +9,7 @@ export interface IDebtFixed {
     quantidadeParcelas: number,
     tempoIndeterminado: boolean,
     finalizado: boolean,
+    categoria: string,
     comentario: string
     data: Date,
 }
@@ -28,6 +29,7 @@ export const createDebtFixed = async (req: IDebtFixed): Promise<void | Error> =>
                 quantidadeParcelas: req.quantidadeParcelas,
                 tempoIndeterminado: req.tempoIndeterminado,
                 finalizado: req.finalizado,
+                categoria: req.categoria,
                 comentario: req.comentario,
                 data: req.data,
         });

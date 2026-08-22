@@ -1,8 +1,9 @@
-import { Box, Icon, Paper } from "@mui/material";
+import { Box, Icon, Paper, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { ToolsList } from "~/components/toolsList/toolsList";
 import { LayoutPage } from "~/shared/layouts/layoutPages";
+import { Environment } from "~/shared/environment";
 import {
   getAllDebts,
   type IListDebts,
@@ -53,6 +54,12 @@ export default function DebtList() {
       />
     }
     >
+      {!isLoading && debtData?.length === 0 && (
+        <Typography className="p-4 text-center" color="text.secondary">
+          {Environment.LISTAGEM_VAZIA}
+        </Typography>
+      )}
+
       {debtData?.map((debt, index) => (
         <Paper
           key={index}

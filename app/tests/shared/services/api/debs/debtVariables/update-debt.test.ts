@@ -17,6 +17,7 @@ const payloadValido: ICreateDebtVariablePayload = {
   codUsuario: 1,
   nome: "Gasolina",
   valor: 200,
+  categoria: "Transporte",
   comentario: "Abastecimento",
   data: new Date("2024-03-05"),
 };
@@ -64,6 +65,7 @@ describe("updateDebtVariable", () => {
       codUsuario: payloadValido.codUsuario,
       nome: payloadValido.nome,
       valor: payloadValido.valor,
+      categoria: payloadValido.categoria,
       comentario: payloadValido.comentario,
       data: payloadValido.data,
     });

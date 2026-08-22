@@ -5,6 +5,7 @@ export type ICreateDebtVariablePayload = {
     codUsuario: number
     nome: string
     valor: number | null
+    categoria: string
     comentario: string
     data: Date
 
@@ -20,6 +21,7 @@ export const createDebtVariable = async (payload: ICreateDebtVariablePayload): P
             codUsuario: payload.codUsuario,
             nome: payload.nome,
             valor: payload.valor,
+            categoria: payload.categoria,
             comentario: payload.comentario,
             data: payload.data,
         })

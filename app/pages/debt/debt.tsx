@@ -119,6 +119,7 @@ export default function Debt() {
         }).format(Number(params));
       },
     },
+    { field: "categoria", headerName: "Categoria", flex: 1 },
     { field: "comentario", headerName: "comentario", flex: 1 },
     {
       field: "data",
@@ -175,6 +176,7 @@ export default function Debt() {
         }).format(Number(params));
       },
     },
+    { field: "categoria", headerName: "Categoria", flex: 1 },
     { field: "comentario", headerName: "comentario", flex: 1 },
     {
       field: "data",

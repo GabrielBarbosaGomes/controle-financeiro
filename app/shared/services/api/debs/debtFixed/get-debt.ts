@@ -15,6 +15,7 @@ export interface IDetailsDebtsFixed{
     quantidadeParcelas: number,
     tempoIndeterminado: boolean,
     finalizado: boolean,
+    categoria?: string,
     comentario?: string,
     data: Date,
     dataAtualizacao?: Date,

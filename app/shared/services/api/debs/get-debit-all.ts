@@ -20,6 +20,7 @@ export const getAllDebts = async (payload: IPropsPayloadGetAllDebts): Promise<TD
     try{
         const urlRelative = `/Debt/all/get`;
         const params = {
+            codUsuario: 1,
             _page: payload.page,
             _limit: Environment.LIMITE_DE_LINHA,
             mesAno: payload.filter,

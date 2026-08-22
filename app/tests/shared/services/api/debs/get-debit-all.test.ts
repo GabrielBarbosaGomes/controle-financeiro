@@ -55,6 +55,19 @@ describe("getAllDebts", () => {
     );
   });
 
+  it("deve enviar codUsuario no filtro (senão o back-end filtra por usuário 0 e nunca retorna dados)", async () => {
+    mockGet.mockResolvedValueOnce({ data: [] });
+
+    await getAllDebts({ page: 1, filter: new Date("2024-01-01") });
+
+    expect(mockGet).toHaveBeenCalledWith(
+      "/Debt/all/get",
+      expect.objectContaining({
+        params: expect.objectContaining({ codUsuario: 1 }),
+      })
+    );
+  });
+
   it("deve retornar mensagem padrão quando exceção não tem message", async () => {
     mockGet.mockRejectedValueOnce({});
 

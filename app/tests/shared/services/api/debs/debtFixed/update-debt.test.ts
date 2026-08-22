@@ -21,6 +21,7 @@ const payloadValido: IDebtFixed = {
   quantidadeParcelas: 1,
   tempoIndeterminado: true,
   finalizado: false,
+  categoria: "",
   comentario: "",
   data: new Date("2024-01-01"),
 };

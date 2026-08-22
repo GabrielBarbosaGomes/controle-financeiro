@@ -22,7 +22,7 @@ React Router v7 + TypeScript + MUI (DataGrid/Charts) + axios + react-hook-form +
 
 ## 3. Import da planilha financeira (contexto resumido)
 
-O usuário tem uma planilha (`Planilha RD - saude financeira.xlsx`) com abas `Sonhos` (metas, fora de escopo por ora) e `Dívidas`/`Gastos 2024`/`Gastos 2025`/`Gastos 2026` (matriz Categoria × Item × Mês). A Categoria da planilha é mapeada num campo **`Categoria` dedicado** em `dispesa_fixa`/`dispesa_variavel` (o `Comentario` existente ficou livre pra texto opcional — decisão revista em 2026-08-22, ver log). Detalhes completos da estrutura da planilha e das regras de parsing estão no doc do back-end (seção 4). Import já rodado com sucesso: 277 despesas fixas + 142 variáveis, junho/2022 a agosto/2026.
+O usuário tem uma planilha (`Planilha RD - saude financeira.xlsx`) com abas `Sonhos` (metas, fora de escopo por ora) e `Dívidas`/`Gastos 2024`/`Gastos 2025`/`Gastos 2026` (matriz Categoria × Item × Mês). O schema do banco **não será alterado**: a Categoria da planilha é mapeada no campo `Comentario` já existente, e o Item no campo `Nome`. Detalhes completos da estrutura da planilha e das regras de parsing estão no doc do back-end (seção 4).
 
 ## 4. Plano de tasks (import + dashboard)
 
@@ -32,13 +32,11 @@ Fluxo combinado com o usuário por task: **(1)** IA informa o plano → **(2)** 
 |----|------|--------|
 | F1 | Tela de import (`/Importar`): upload de arquivo + botão, novo service `app/shared/services/api/import/import-planilha.ts`, rota em `routes.ts`, item no menu lateral (`ItemsMenu`) | PENDENTE |
 | F2 | `home.tsx` passa a consumir `GET /Dashboard/resumo` real (hoje é mockado): card Saldo Atual, card Saúde Financeira, gráfico "com que mais gastei" por categoria | PENDENTE |
-| F3 | Grid de despesas (`debt.tsx`) ganha coluna Categoria + campo Categoria nos formulários de criar/editar (`detailsDebtFixed.tsx`/`detailsDebtVariable.tsx`) | IMPLEMENTADA (aguardando teste do usuário em tela) |
-| — | *(fora do plano)* `get-debit-all.ts` não enviava `codUsuario` (causava lista de meses sempre vazia); `debtList.tsx` sem mensagem de "sem dados" | VALIDADA |
+| F3 | Grid de despesas (`debt.tsx`) ganha coluna Categoria (lida do campo `Comentario`) | PENDENTE |
 
 As tasks de back-end (B1–B5: leitura do Excel, parser, endpoints de import e dashboard) estão detalhadas no repositório `controle-financeiro-api`.
 
 ## 5. Log de decisões
 
+- 2026-08-22: decidido manter o schema do banco sem alterações — Categoria da planilha mapeada em `Comentario` (não cria coluna nova).
 - 2026-08-22: `gh` CLI reautenticado com a conta pessoal `GabrielBarbosaGomes`; `user.name`/`user.email` configurados localmente (não globalmente) nos dois repositórios como `gabriel` / `gabryel122crf@gmail.com`.
-- 2026-08-22: decisão inicial de não alterar schema (Categoria em `Comentario`) foi **revertida** — usuário pediu coluna `Categoria` dedicada depois de ver o dado confuso na tela.
-- 2026-08-22: `npm install` rodado do zero (node_modules não existia); vários bugs pré-existentes corrigidos ao testar com dado real pela primeira vez (ver doc do back-end, seção 6).
